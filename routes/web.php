@@ -5,18 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\User\MovieController as UserMovieController;
+use App\Http\Controllers\User\CommentController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/movies', function () {
-    return 'Movies List';
-})->name('movies.index');
+Route::get('/movies', [UserMovieController::class, 'index'])
+    ->name('movies.index');
 
-Route::get('/movies/{movie}', function ($movie) {
-    return "Movie Details: {$movie}";
-})->name('movies.show');
+Route::get('/movies/{movie}', [UserMovieController::class, 'show'])
+    ->name('movies.show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -27,9 +27,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         return 'My Favorite Movies';
     })->name('favorites');
 
-    Route::post('/movies/{movie}/comments', function ($movie) {
-        return "Comment on {$movie}";
-    })->name('movies.comments.store');
+    Route::post('/movies/{movie}/comments', [CommentController::class, 'store'])
+        ->name('movies.comments.store');
+
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])
+        ->name('comments.update');
+
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
+        ->name('comments.destroy');
 
     Route::post('/movies/{movie}/favorite', function ($movie) {
         return "Favorite movie {$movie}";
