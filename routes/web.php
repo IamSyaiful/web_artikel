@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\GenreController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -53,10 +54,8 @@ Route::middleware(['auth', 'role:admin'])
         return 'Admin Movie Management';
     })->name('admin.movies');
 
-    Route::get('/genres', function () {
-        return 'Admin Genre Management';
-    })->name('admin.genres');
-
+    Route::resource('genres', GenreController::class)
+    ->except(['show']);
 });
 
 Route::middleware('auth')->group(function () {
