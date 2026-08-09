@@ -1,47 +1,454 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }"
+    x-init="document.documentElement.classList.toggle('dark', darkMode)"
+    :class="{ dark: darkMode }"
+>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+    <title>Login - Ruang Cinema</title>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+    {{-- Prevent theme flash --}}
+    <script>
+        if (
+            localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    {{-- Font --}}
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link
+        href="https://fonts.bunny.net/css?family=figtree:400,500,600,700"
+        rel="stylesheet"
+    >
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+<body class="bg-gray-100 font-sans text-gray-950 dark:bg-gray-950 dark:text-white lg:h-screen lg:overflow-hidden">
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+    <div class="relative mx-auto flex min-h-screen max-w-7xl overflow-hidden bg-white shadow-xl dark:bg-gray-900 lg:my-4 lg:h-[calc(100vh-2rem)] lg:min-h-0 lg:rounded-3xl">
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+        {{-- Theme Toggle --}}
+        <button
+            type="button"
+            @click="
+                darkMode = !darkMode;
+                localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+                document.documentElement.classList.toggle('dark', darkMode);
+            "
+            class="absolute right-5 top-5 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            aria-label="Toggle theme"
+        >
+            <x-icon
+                name="moon"
+                size="20"
+                x-show="!darkMode"
+            />
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            <x-icon
+                name="sun"
+                size="20"
+                x-show="darkMode"
+            />
+        </button>
+
+
+        {{-- ========================================================= --}}
+        {{-- LEFT PANEL --}}
+        {{-- ========================================================= --}}
+
+        <section class="relative hidden w-1/2 overflow-hidden bg-[#071426] p-8 text-white lg:flex lg:flex-col">
+
+            {{-- Decorative circles --}}
+            <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full border border-white/10"></div>
+            <div class="absolute -bottom-24 -left-24 h-64 w-64 rounded-full border border-white/10"></div>
+
+
+            {{-- Logo --}}
+            <div class="relative z-10 flex items-center gap-3">
+
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/5">
+                    <x-icon
+                        name="clapperboard"
+                        size="24"
+                        class="text-white"
+                    />
+                </div>
+
+                <div>
+                    <h1 class="text-xl font-bold">
+                        Ruang
+                    </h1>
+
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-gray-400">
+                        Cinema
+                    </p>
+                </div>
+
+            </div>
+
+
+            {{-- Movie Preview --}}
+            <div class="relative z-10 mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+
+                <div class="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
+
+                    <span class="text-xs font-semibold">
+                        Ruang
+                    </span>
+
+                    <div class="flex gap-4 text-[9px] text-gray-500">
+                        <span>Home</span>
+                        <span>Movies</span>
+                        <span>Genres</span>
+                        <span>About</span>
+                    </div>
+
+                    <div class="h-5 w-16 rounded-full bg-white/5"></div>
+
+                </div>
+
+
+                <h3 class="mb-3 text-sm font-semibold">
+                    Popular Movies
+                </h3>
+
+
+                <div class="grid grid-cols-5 gap-2">
+
+                    @foreach ([
+                        ['The Batman', '2022'],
+                        ['Dune', '2024'],
+                        ['Interstellar', '2014'],
+                        ['Inception', '2010'],
+                        ['The Dark Knight', '2008'],
+                    ] as $movie)
+
+                        <div class="overflow-hidden rounded-lg bg-white/5">
+
+                            <div class="h-28 bg-gradient-to-b from-gray-700 to-gray-900"></div>
+
+                            <div class="p-2">
+
+                                <p class="truncate text-[8px] font-semibold">
+                                    {{ $movie[0] }}
+                                </p>
+
+                                <p class="mt-1 text-[7px] text-gray-500">
+                                    {{ $movie[1] }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+
+            {{-- Left Description --}}
+            <div class="relative z-10 mt-auto">
+
+                <h2 class="text-3xl font-bold leading-tight">
+                    Temukan film terbaik.
+                    <br>
+                    <span class="text-gray-400">
+                        Simpan favoritmu.
+                    </span>
+                </h2>
+
+                <p class="mt-3 max-w-md text-sm leading-6 text-gray-400">
+                    Ruang Cinema adalah tempat terbaik untuk
+                    menemukan, menikmati, dan menyimpan film favoritmu.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        {{-- ========================================================= --}}
+        {{-- RIGHT PANEL --}}
+        {{-- ========================================================= --}}
+
+        <section class="flex w-full items-center justify-center bg-white px-6 py-10 dark:bg-gray-900 sm:px-10 lg:w-1/2 lg:px-16 lg:py-8">
+
+            <div class="w-full max-w-md">
+
+                {{-- Mobile Logo --}}
+                <div class="mb-6 flex justify-center lg:hidden">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#071426] text-white dark:bg-white dark:text-[#071426]">
+                            <x-icon
+                                name="clapperboard"
+                                size="24"
+                            />
+                        </div>
+
+                        <div>
+                            <p class="text-xl font-bold">
+                                Ruang
+                            </p>
+
+                            <p class="text-[9px] uppercase tracking-[0.3em] text-gray-500">
+                                Cinema
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {{-- Heading --}}
+                <div class="text-center">
+
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-950 dark:text-white">
+                        Welcome Back
+                    </h2>
+
+                    <p class="mx-auto mt-2 max-w-sm text-sm leading-5 text-gray-500 dark:text-gray-400">
+                        Masuk untuk melanjutkan pengalaman
+                        menonton film favorit kamu.
+                    </p>
+
+                </div>
+
+
+                {{-- Login Form --}}
+                <form
+                    method="POST"
+                    action="{{ route('login') }}"
+                    class="mt-7 space-y-4"
+                    x-data="{
+                        loading: false,
+                        showPassword: false
+                    }"
+                    @submit="loading = true"
+                >
+
+                    @csrf
+
+
+                    {{-- Email --}}
+                    <div>
+
+                        <label
+                            for="email"
+                            class="mb-1.5 block text-sm font-semibold"
+                        >
+                            Email
+                        </label>
+
+                        <div class="relative">
+
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                <x-icon
+                                    name="mail"
+                                    size="20"
+                                />
+                            </span>
+
+                            <input
+                                id="email"
+                                type="email"
+                                name="email"
+                                value="{{ old('email') }}"
+                                required
+                                autofocus
+                                autocomplete="username"
+                                placeholder="email@example.com"
+                                class="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-11 pr-4 text-sm text-gray-900 outline-none transition focus:border-gray-950 focus:ring-1 focus:ring-gray-950 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white"
+                            >
+
+                        </div>
+
+                        @error('email')
+                            <p class="mt-1.5 text-xs text-red-500">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    {{-- Password --}}
+                    <div>
+
+                        <label
+                            for="password"
+                            class="mb-1.5 block text-sm font-semibold"
+                        >
+                            Password
+                        </label>
+
+                        <div class="relative">
+
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400">
+                                <x-icon
+                                    name="lock"
+                                    size="20"
+                                />
+                            </span>
+
+                            <input
+                                id="password"
+                                :type="showPassword ? 'text' : 'password'"
+                                name="password"
+                                required
+                                autocomplete="current-password"
+                                placeholder="Enter your password"
+                                class="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-11 pr-12 text-sm text-gray-900 outline-none transition focus:border-gray-950 focus:ring-1 focus:ring-gray-950 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-white dark:focus:ring-white"
+                            >
+
+                            {{-- Show / Hide Password --}}
+                            <button
+                                type="button"
+                                @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-200"
+                                aria-label="Toggle password visibility"
+                            >
+
+                                <x-icon
+                                    name="eye"
+                                    size="20"
+                                    x-show="!showPassword"
+                                />
+
+                                <x-icon
+                                    name="eye-off"
+                                    size="20"
+                                    x-show="showPassword"
+                                />
+
+                            </button>
+
+                        </div>
+
+                        @error('password')
+                            <p class="mt-1.5 text-xs text-red-500">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    {{-- Remember + Forgot --}}
+                    <div class="flex items-center justify-between">
+
+                        <label
+                            for="remember"
+                            class="flex cursor-pointer items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+                        >
+
+                            <input
+                                id="remember"
+                                type="checkbox"
+                                name="remember"
+                                class="h-4 w-4 rounded border-gray-300 text-gray-950 focus:ring-gray-950 dark:border-gray-600 dark:bg-gray-800"
+                            >
+
+                            Remember me
+
+                        </label>
+
+
+                        @if (Route::has('password.request'))
+
+                            <a
+                                href="{{ route('password.request') }}"
+                                class="text-sm font-semibold hover:underline"
+                            >
+                                Forgot password?
+                            </a>
+
+                        @endif
+
+                    </div>
+
+
+                    {{-- Login Button --}}
+                    <button
+                        type="submit"
+                        :disabled="loading"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#071426] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-80 dark:bg-white dark:text-[#071426] dark:hover:bg-gray-200 dark:focus:ring-white"
+                    >
+
+                        {{-- Loader --}}
+                        <span
+                            x-show="loading"
+                            class="flex items-center gap-2"
+                        >
+                            <svg
+                                aria-hidden="true"
+                                class="h-5 w-5 animate-spin"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="9"
+                                    class="opacity-25"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                />
+
+                                <path
+                                    d="M21 12a9 9 0 0 1-9 9"
+                                    class="opacity-90"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+
+                            Signing in...
+                        </span>
+
+
+                        <span x-show="!loading">
+                            Login
+                        </span>
+
+                    </button>
+
+
+                    {{-- Register --}}
+                    <p class="pt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+
+                        Belum punya akun?
+
+                        <a
+                            href="{{ route('register') }}"
+                            class="ml-1 font-semibold text-gray-950 hover:underline dark:text-white"
+                        >
+                            Register
+                        </a>
+
+                    </p>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+</html>

@@ -131,9 +131,20 @@ class MovieController extends Controller
             $relatedMovies = $relatedMovies->concat($additionalMovies);
         }
 
+        // Cek favorite state
+        $isFavorite = false;
+
+        if (auth()->check()) {
+            $isFavorite = auth()->user()
+                ->favoritedMovies()
+                ->where('movie_id', $movie->id)
+                ->exists();
+        }
+
         return view('pages.user.movies.show', [
             'movie' => $movie,
             'relatedMovies' => $relatedMovies,
+            'isFavorite' => $isFavorite,
         ]);
 
     }

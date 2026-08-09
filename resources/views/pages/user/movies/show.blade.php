@@ -277,49 +277,87 @@
                     @endif
 
 
-                    {{-- ================================================= --}}
                     {{-- Favorite --}}
-                    {{-- ================================================= --}}
-
                     <div class="mt-8">
 
                         @auth
 
-                            <form
-                                action="{{ route('movies.favorite', $movie) }}"
-                                method="POST"
-                            >
+                            @if ($isFavorite)
 
-                                @csrf
+                                {{-- Remove Favorite --}}
+                                <form
+                                    action="{{ route('movies.unfavorite', $movie) }}"
+                                    method="POST"
+                                    data-confirm-favorite
+                                    data-movie-title="{{ $movie->title }}"
+                                >
+                                    @csrf
 
-                                <button
-                                    type="submit"
-                                    class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-900 transition hover:border-gray-950 hover:bg-gray-50 sm:w-auto"
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gray-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800 sm:w-auto"
+                                    >
+
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                            class="h-4 w-4"
+                                        >
+                                            <path
+                                                d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z"
+                                            />
+                                        </svg>
+
+                                        Remove from Favorites
+
+                                    </button>
+
+                                </form>
+
+                            @else
+
+                                {{-- Add Favorite --}}
+                                <form
+                                    action="{{ route('movies.favorite', $movie) }}"
+                                    method="POST"
                                 >
 
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.8"
-                                        stroke="currentColor"
-                                        class="h-4 w-4"
+                                    @csrf
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-900 transition hover:border-gray-950 hover:bg-gray-50 sm:w-auto"
                                     >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M20.84 8.61a5.5 5.5 0 0 0-7.78 0L12 9.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-4.84a5.5 5.5 0 0 0 0-7.78Z"
-                                        />
-                                    </svg>
 
-                                    Add to Favorites
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.8"
+                                            stroke="currentColor"
+                                            class="h-4 w-4"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M20.84 8.61a5.5 5.5 0 0 0-7.78 0L12 9.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-4.84a5.5 5.5 0 0 0 0-7.78Z"
+                                            />
+                                        </svg>
 
-                                </button>
+                                        Add to Favorites
 
-                            </form>
+                                    </button>
+
+                                </form>
+
+                            @endif
 
                         @else
 
+                            {{-- Guest --}}
                             <a
                                 href="{{ route('login') }}"
                                 class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-900 transition hover:border-gray-950 hover:bg-gray-50 sm:w-auto"

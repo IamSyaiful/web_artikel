@@ -5,15 +5,17 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Movie;
+use App\Models\Favorite;
+use App\Models\User;
 
 class FavoriteController extends Controller
 {
     public function index()
     {
         $user = auth()->user();
-        $movies = $user->favoriteMovies()->with('genres')->latest('favorites.created_at')->get();
+        $movies = $user->favoritedMovies()->with('genres')->latest('favorites.created_at')->get();
 
-        return response()->json([
+        return view('pages.user.favorites.index', [
             'movies' => $movies,
         ]);
     }
@@ -23,16 +25,12 @@ class FavoriteController extends Controller
         $user = auth()->user();
 
         if ($user->favoritedMovies()->where('movie_id', $movie->id)->exists()) {
-            return response()->json([
-                'message' => 'Movie is already in your favorites.',
-            ], 422);
+            return back()->with('error', 'Movie is already in your favorites.');
         }
 
         $user->favoritedMovies()->attach($movie->id);
 
-        return response()->json([
-            'message' => 'Movie added to favorites.',
-        ], 201);
+        return back()->with('success', 'Movie added to favorites.');
     }
 
     public function destroy(Movie $movie)
@@ -41,8 +39,6 @@ class FavoriteController extends Controller
 
         $user->favoritedMovies()->detach($movie->id);
 
-        return response()->json([
-            'message' => 'Movie removed from favorites.',
-        ]);
+        return back()->with('success', 'Movie removed from favorites.');
     }
 }

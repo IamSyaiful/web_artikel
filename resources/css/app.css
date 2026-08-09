@@ -1,3 +1,107 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* sweetalert */
+.ruang-cinema-swal {
+    width: min(420px, calc(100% - 2rem)) !important;
+
+    border: 1px solid #e5e7eb !important;
+    border-radius: 1.25rem !important;
+
+    padding: 2rem !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 8px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+.ruang-cinema-swal-title {
+    margin-top: 0.75rem !important;
+
+    font-family: 'Figtree', sans-serif !important;
+
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+
+    line-height: 1.5 !important;
+
+    color: #111827 !important;
+}
+
+.ruang-cinema-swal-text {
+    margin-top: 0.5rem !important;
+
+    font-family: 'Figtree', sans-serif !important;
+
+    font-size: 0.875rem !important;
+
+    line-height: 1.6 !important;
+
+    color: #6b7280 !important;
+}
+
+.ruang-cinema-swal-confirm {
+    min-width: 90px;
+
+    border-radius: 0.625rem;
+
+    background: #030712;
+
+    padding: 0.625rem 1rem;
+
+    font-family: 'Figtree', sans-serif;
+
+    font-size: 0.875rem;
+
+    font-weight: 600;
+
+    color: #ffffff;
+
+    transition:
+        background-color 150ms ease,
+        transform 150ms ease;
+}
+
+.ruang-cinema-swal-confirm:hover {
+    background: #1f2937;
+}
+
+.ruang-cinema-swal-confirm:active {
+    transform: scale(0.97);
+}
+
+.ruang-cinema-swal-cancel {
+    min-width: 90px;
+
+    margin-right: 0.5rem;
+
+    border-radius: 0.625rem;
+
+    border: 1px solid #d1d5db;
+
+    background: #ffffff;
+
+    padding: 0.625rem 1rem;
+
+    font-family: 'Figtree', sans-serif;
+
+    font-size: 0.875rem;
+
+    font-weight: 600;
+
+    color: #374151;
+
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease;
+}
+
+.ruang-cinema-swal-cancel:hover {
+    border-color: #9ca3af;
+
+    background: #f9fafb;
+}
