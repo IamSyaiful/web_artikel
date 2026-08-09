@@ -9,6 +9,7 @@ use App\Http\Controllers\User\MovieController as UserMovieController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\FavoriteController;
 use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
@@ -45,17 +46,23 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
+    ->name('admin.')
     ->group(function () {
 
-    Route::get('/', function () {
-        return 'Admin Dashboard';
-    })->name('admin.dashboard');
+    Route::get('/', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     Route::resource('users', UserController::class)
     ->except(['show']);
 
     Route::resource('movies', MovieController::class)
     ->except(['show']);
+
+    Route::get('movies/tmdb/search', [MovieController::class, 'tmdbSearch'])
+        ->name('movies.tmdb.search');
+    Route::get('movies/tmdb/{tmdbMovie}', [MovieController::class, 'tmdbDetails'])
+        ->whereNumber('tmdbMovie')
+        ->name('movies.tmdb.details');
 
     Route::resource('genres', GenreController::class)
     ->except(['show']);

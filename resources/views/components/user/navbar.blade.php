@@ -1,5 +1,5 @@
 <nav
-    x-data="{ open: false }"
+    x-data="{ open: false, userMenuOpen: false }"
     class="sticky top-0 z-50 border-b border-gray-200 bg-white"
 >
 
@@ -8,42 +8,8 @@
     <div class="mx-auto hidden h-[86px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:flex lg:px-8">
 
         {{-- Logo --}}
-        <a
-            href="{{ route('home') }}"
-            class="flex items-center gap-3"
-        >
-
-            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-950 text-white">
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.6"
-                    stroke="currentColor"
-                    class="h-5 w-5"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M4 7.5h16M4 16.5h16M7 4v3.5M12 4v3.5M17 4v3.5M7 16.5V20M12 16.5V20M17 16.5V20"
-                    />
-                </svg>
-
-            </div>
-
-            <div class="leading-none">
-
-                <span class="block text-base font-semibold text-gray-950">
-                    Ruang
-                </span>
-
-                <span class="mt-1 block text-[10px] font-medium tracking-[0.25em] text-gray-500">
-                    CINEMA
-                </span>
-
-            </div>
-
+        <a href="{{ route('home') }}" class="flex items-center">
+            <x-ruang-cinema-logo fit="contain" class="h-10 w-40 object-center" />
         </a>
 
 
@@ -125,12 +91,61 @@
 
             @else
 
-                <a
-                    href="{{ route('dashboard') }}"
-                    class="text-sm font-medium text-gray-700 transition hover:text-gray-950"
-                >
-                    Dashboard
-                </a>
+                <div class="relative" @keydown.escape.window="userMenuOpen = false" @click.outside="userMenuOpen = false">
+                    <button
+                        type="button"
+                        @click="userMenuOpen = !userMenuOpen"
+                        class="flex items-center gap-3 text-left"
+                        :aria-expanded="userMenuOpen"
+                        aria-haspopup="true"
+                    >
+                        <span class="hidden sm:block">
+                            <span class="block text-sm font-semibold text-gray-950">{{ auth()->user()->name }}</span>
+                        </span>
+
+                        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                            <x-icon name="user-round" size="20" />
+                        </span>
+
+                        <x-icon name="chevron-down" size="16" class="text-gray-500 transition" x-bind:class="{ 'rotate-180': userMenuOpen }" />
+                    </button>
+
+                    <div
+                        x-cloak
+                        x-show="userMenuOpen"
+                        x-transition
+                        class="absolute right-0 top-full z-50 mt-3 w-48 rounded-xl border border-gray-200 bg-white p-2 shadow-lg"
+                    >
+                        <a
+                            href="{{ route('profile.edit') }}"
+                            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        >
+                            <x-icon name="user-round" size="17" />
+                            Profile
+                        </a>
+
+                        <a
+                            href="{{ route('favorites') }}"
+                            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        >
+                            <x-icon name="heart" size="17" />
+                            Favorite
+                        </a>
+
+                        <div class="my-1 border-t border-gray-100"></div>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-red-600 transition hover:bg-red-50"
+                            >
+                                <x-icon name="log-out" size="17" />
+                                Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
             @endguest
 
@@ -146,42 +161,8 @@
     <div class="flex h-[64px] items-center justify-between px-4 lg:hidden">
 
         {{-- Logo --}}
-        <a
-            href="{{ route('home') }}"
-            class="flex items-center gap-2.5"
-        >
-
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-950 text-white">
-
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.6"
-                    stroke="currentColor"
-                    class="h-4 w-4"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M4 7.5h16M4 16.5h16M7 4v3.5M12 4v3.5M17 4v3.5M7 16.5V20M12 16.5V20M17 16.5V20"
-                    />
-                </svg>
-
-            </div>
-
-            <div class="leading-none">
-
-                <span class="block text-sm font-semibold text-gray-950">
-                    Ruang
-                </span>
-
-                <span class="mt-0.5 block text-[8px] font-medium tracking-[0.25em] text-gray-500">
-                    CINEMA
-                </span>
-
-            </div>
-
+        <a href="{{ route('home') }}" class="flex items-center">
+            <x-ruang-cinema-logo fit="contain" class="h-8 w-32 object-center" />
         </a>
 
 
@@ -253,43 +234,8 @@
             {{-- Sidebar Header --}}
             <div class="flex h-[64px] items-center justify-between border-b border-gray-200 px-5">
 
-                <a
-                    href="{{ route('home') }}"
-                    @click="open = false"
-                    class="flex items-center gap-2.5"
-                >
-
-                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-950 text-white">
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.6"
-                            stroke="currentColor"
-                            class="h-4 w-4"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M4 7.5h16M4 16.5h16M7 4v3.5M12 4v3.5M17 4v3.5M7 16.5V20M12 16.5V20M17 16.5V20"
-                            />
-                        </svg>
-
-                    </div>
-
-                    <div class="leading-none">
-
-                        <span class="block text-sm font-semibold text-gray-950">
-                            Ruang
-                        </span>
-
-                        <span class="mt-0.5 block text-[8px] font-medium tracking-[0.25em] text-gray-500">
-                            CINEMA
-                        </span>
-
-                    </div>
-
+                <a href="{{ route('home') }}" @click="open = false" class="flex items-center">
+                    <x-ruang-cinema-logo fit="contain" class="h-8 w-32 object-center" />
                 </a>
 
 
@@ -390,12 +336,30 @@
                     @else
 
                         <a
-                            href="{{ route('dashboard') }}"
+                            href="{{ route('profile.edit') }}"
                             @click="open = false"
                             class="flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
                         >
-                            Dashboard
+                            Profile
                         </a>
+
+                        <a
+                            href="{{ route('favorites') }}"
+                            @click="open = false"
+                            class="mt-1 flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        >
+                            Favorite
+                        </a>
+
+                        <form method="POST" action="{{ route('logout') }}" class="mt-1">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="flex w-full items-center rounded-xl px-3 py-3 text-left text-sm font-medium text-red-600 transition hover:bg-red-50"
+                            >
+                                Logout
+                            </button>
+                        </form>
 
                     @endguest
 

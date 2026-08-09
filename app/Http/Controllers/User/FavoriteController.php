@@ -10,13 +10,23 @@ use App\Models\User;
 
 class FavoriteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
-        $movies = $user->favoritedMovies()->with('genres')->latest('favorites.created_at')->get();
+        $sort = $request->query('sort', 'newest');
+        $query = $user->favoritedMovies()->with('genres');
+
+        match ($sort) {
+            'oldest' => $query->orderBy('favorites.created_at'),
+            'title' => $query->orderBy('movies.title'),
+            default => $query->latest('favorites.created_at'),
+        };
+
+        $movies = $query->paginate(8)->withQueryString();
 
         return view('pages.user.favorites.index', [
             'movies' => $movies,
+            'sort' => in_array($sort, ['newest', 'oldest', 'title'], true) ? $sort : 'newest',
         ]);
     }
 

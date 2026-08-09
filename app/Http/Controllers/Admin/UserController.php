@@ -15,7 +15,8 @@ class UserController extends Controller
     public function index()
     {
         $users = User::latest()->get();
-        return response()->json($users);
+
+        return view('pages.admin.users.index', compact('users'));
     }
 
     /**
@@ -23,9 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return response()->json([
-            'roles' => ['admin', 'user'],
-        ]);
+        return view('pages.admin.users.create');
     }
 
     /**
@@ -47,17 +46,15 @@ class UserController extends Controller
             'role' => $validated['role'],
         ]);
 
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user,
-        ], 201);
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success_title', 'User berhasil disimpan')
+            ->with('success', 'User baru berhasil ditambahkan.');
     }
 
     public function edit(User $user)
     {
-        return response()->json([
-            'user' => $user,
-        ]);
+        return view('pages.admin.users.edit', compact('user'));
     }
 
     /**
@@ -82,10 +79,10 @@ class UserController extends Controller
 
         $user->save();
 
-        return response()->json([
-            'message' => 'User updated successfully',
-            'user' => $user,
-        ]);
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success_title', 'User berhasil diedit')
+            ->with('success', 'Perubahan data user berhasil disimpan.');
     }
 
     /**
@@ -94,15 +91,17 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
-            return response()->json([
-                'message' => 'You cannot delete your own account.',
-            ], 422);
+            return redirect()
+                ->route('admin.users.index')
+                ->with('error_title', 'User tidak dapat dihapus')
+                ->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
 
         $user->delete();
 
-        return response()->json([
-            'message' => 'User deleted successfully',
-        ]);
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success_title', 'User berhasil dihapus')
+            ->with('success', 'User berhasil dihapus dari daftar.');
     }
 }

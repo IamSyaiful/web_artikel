@@ -8,16 +8,48 @@ use App\Models\Movie;
 use App\Models\Genre;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Services\TmdbService;
+use Illuminate\Http\Client\RequestException;
 
 class MovieController extends Controller
 {
+    public function tmdbSearch(Request $request, TmdbService $tmdb)
+    {
+        $validated = $request->validate([
+            'query' => ['required', 'string', 'min:2', 'max:100'],
+        ]);
+
+        try {
+            return response()->json(['results' => $tmdb->searchMovies($validated['query'])]);
+        } catch (RequestException|\RuntimeException $exception) {
+            report($exception);
+
+            return response()->json(['message' => 'TMDB tidak dapat diakses saat ini.'], 502);
+        }
+    }
+
+    public function tmdbDetails(int $tmdbMovie, TmdbService $tmdb)
+    {
+        try {
+            return response()->json($tmdb->movieDetails($tmdbMovie));
+        } catch (RequestException|\RuntimeException $exception) {
+            report($exception);
+
+            return response()->json(['message' => 'Detail film dari TMDB tidak dapat diambil.'], 502);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $movies = Movie::with('genres')->latest()->get();
-        return response()->json($movies);
+        $movies = Movie::with('genres')
+            ->latest()
+            ->get();
+
+        return view('pages.admin.movies.index', compact('movies'));
     }
 
     /**
@@ -27,9 +59,7 @@ class MovieController extends Controller
     {
         $genres = Genre::orderBy('name')->get();
 
-        return response()->json([
-            'genres' => $genres,
-        ]);
+        return view('pages.admin.movies.create', compact('genres'));
     }
 
     /**
@@ -39,7 +69,7 @@ class MovieController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'poster' => ['nullable', 'image', 'max:2048'],
+            'poster' => ['nullable', 'image', 'max:10240'],
             'release_date' => ['nullable', 'date'],
             'duration' => ['nullable', 'integer', 'min:1'],
             'director' => ['nullable', 'string', 'max:255'],
@@ -63,6 +93,12 @@ class MovieController extends Controller
         if ($request->hasFile('poster')) {
             $posterPath = $request->file('poster')
                 ->store('movies/posters', 'public');
+        } elseif ($request->filled('tmdb_poster_path')) {
+            try {
+                $posterPath = app(TmdbService::class)->storePoster($request->string('tmdb_poster_path')->toString());
+            } catch (RequestException|\RuntimeException $exception) {
+                report($exception);
+            }
         }
 
         $movie = Movie::create([
@@ -79,10 +115,10 @@ class MovieController extends Controller
 
         $movie->genres()->sync($validated['genres']);
 
-        return response()->json([
-            'message' => 'Movie created successfully',
-            'movie' => $movie->load('genres'),
-        ], 201);
+        return redirect()
+            ->route('admin.movies.index')
+            ->with('success_title', 'Movie berhasil disimpan')
+            ->with('success', 'Data movie baru berhasil ditambahkan.');
     }
 
 
@@ -102,10 +138,7 @@ class MovieController extends Controller
 
         $genres = Genre::orderBy('name')->get();
 
-        return response()->json([
-            'movie' => $movie,
-            'genres' => $genres,
-        ]);
+        return view('pages.admin.movies.edit', compact('movie', 'genres'));
     }
 
     /**
@@ -115,7 +148,7 @@ class MovieController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'poster' => ['nullable', 'image', 'max:2048'],
+            'poster' => ['nullable', 'image', 'max:10240'],
             'release_date' => ['nullable', 'date'],
             'duration' => ['nullable', 'integer', 'min:1'],
             'director' => ['nullable', 'string', 'max:255'],
@@ -159,10 +192,10 @@ class MovieController extends Controller
 
         $movie->genres()->sync($validated['genres']);
 
-        return response()->json([
-            'message' => 'Movie updated successfully',
-            'movie' => $movie->load('genres'),
-        ]);
+        return redirect()
+            ->route('admin.movies.index')
+            ->with('success_title', 'Movie berhasil diedit')
+            ->with('success', 'Perubahan data movie berhasil disimpan.');
     }
 
     /**
@@ -176,8 +209,9 @@ class MovieController extends Controller
 
         $movie->delete();
 
-        return response()->json([
-            'message' => 'Movie deleted successfully',
-        ]);
+        return redirect()
+            ->route('admin.movies.index')
+            ->with('success_title', 'Movie berhasil dihapus')
+            ->with('success', 'Movie berhasil dihapus dari daftar.');
     }
 }

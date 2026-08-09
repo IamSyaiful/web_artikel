@@ -18,8 +18,9 @@
         "vite": "^8.0.0"
     },
     "dependencies": {
-        "flowbite": "^4.0.2",
+        "flowbite": "^3.1.2",
         "lucide": "^1.31.0",
+        "simple-datatables": "^10.3.0",
         "sweetalert2": "^11.26.25"
     }
 }

@@ -8,34 +8,8 @@
             {{-- Brand --}}
             <div>
 
-                <a
-                    href="{{ route('home') }}"
-                    class="inline-flex items-center gap-2"
-                >
-
-                    <div class="flex h-7 w-7 items-center justify-center rounded-md bg-gray-950 text-white">
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.8"
-                            stroke="currentColor"
-                            class="h-4 w-4"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M3.75 7.5h16.5M3.75 16.5h16.5M6.75 4.5v3M11.25 4.5v3M15.75 4.5v3M6.75 16.5v3M11.25 16.5v3M15.75 16.5v3"
-                            />
-                        </svg>
-
-                    </div>
-
-                    <span class="text-sm font-bold tracking-tight text-gray-950">
-                        RUANG CINEMA
-                    </span>
-
+                <a href="{{ route('home') }}" class="inline-flex items-center">
+                    <x-ruang-cinema-logo fit="contain" class="h-8 w-36 object-center" />
                 </a>
 
                 <p class="mt-4 max-w-xs text-sm leading-6 text-gray-600">

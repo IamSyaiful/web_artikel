@@ -16,7 +16,8 @@ class GenreController extends Controller
     public function index()
     {
         $genres = Genre::latest()->get();
-        return response()->json($genres);
+
+        return view('pages.admin.genres.index', compact('genres'));
     }
 
     /**
@@ -24,11 +25,7 @@ class GenreController extends Controller
      */
     public function create()
     {
-        return response()->json([
-            'fields' => [
-                'name',
-            ],
-        ]);
+        return view('pages.admin.genres.create');
     }
 
     /**
@@ -53,10 +50,10 @@ class GenreController extends Controller
             'slug' => $slug,
         ]);
 
-        return response()->json([
-            'message' => 'Genre created successfully',
-            'genre' => $genre,
-        ]);
+        return redirect()
+            ->route('admin.genres.index')
+            ->with('success_title', 'Genre berhasil disimpan')
+            ->with('success', 'Genre baru berhasil ditambahkan.');
     }
 
     /**
@@ -74,9 +71,7 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
-        return response()->json([
-            'genre' => $genre,
-        ]);
+        return view('pages.admin.genres.edit', compact('genre'));
     }
 
     /**
@@ -101,10 +96,10 @@ class GenreController extends Controller
             'slug' => $slug,
         ]);
 
-        return response()->json([
-            'message' => 'Genre updated successfully',
-            'genre' => $genre,
-        ]);
+        return redirect()
+            ->route('admin.genres.index')
+            ->with('success_title', 'Genre berhasil diedit')
+            ->with('success', 'Perubahan genre berhasil disimpan.');
     }
 
     /**
@@ -114,8 +109,9 @@ class GenreController extends Controller
     {
         $genre->delete();
 
-        return response()->json([
-            'message' => 'Genre deleted successfully',
-        ]);
+        return redirect()
+            ->route('admin.genres.index')
+            ->with('success_title', 'Genre berhasil dihapus')
+            ->with('success', 'Genre berhasil dihapus dari daftar.');
     }
 }

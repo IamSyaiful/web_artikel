@@ -76,26 +76,8 @@
 
 
             {{-- Logo --}}
-            <div class="relative z-10 flex items-center gap-3">
-
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-white/20 bg-white/5">
-                    <x-icon
-                        name="clapperboard"
-                        size="24"
-                        class="text-white"
-                    />
-                </div>
-
-                <div>
-                    <h1 class="text-xl font-bold">
-                        Ruang
-                    </h1>
-
-                    <p class="text-[10px] uppercase tracking-[0.3em] text-gray-400">
-                        Cinema
-                    </p>
-                </div>
-
+            <div class="relative z-10">
+                <x-ruang-cinema-logo variant="white" fit="contain" class="h-14 w-52 object-center" />
             </div>
 
 
@@ -192,28 +174,8 @@
 
                 {{-- Mobile Logo --}}
                 <div class="mb-5 flex justify-center lg:hidden">
-
-                    <div class="flex items-center gap-3">
-
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#071426] text-white dark:bg-white dark:text-[#071426]">
-                            <x-icon
-                                name="clapperboard"
-                                size="24"
-                            />
-                        </div>
-
-                        <div>
-                            <p class="text-xl font-bold">
-                                Ruang
-                            </p>
-
-                            <p class="text-[9px] uppercase tracking-[0.3em] text-gray-500">
-                                Cinema
-                            </p>
-                        </div>
-
-                    </div>
-
+                    <x-ruang-cinema-logo fit="contain" class="h-10 w-40 object-center dark:hidden" />
+                    <x-ruang-cinema-logo variant="white" fit="contain" class="hidden h-10 w-40 object-center dark:block" />
                 </div>
 
 
