@@ -8,10 +8,10 @@ use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\User\MovieController as UserMovieController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\FavoriteController;
+use App\Http\Controllers\User\HomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 
 Route::get('/movies', [UserMovieController::class, 'index'])
     ->name('movies.index');
