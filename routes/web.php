@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\GenreController;
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\User\MovieController as UserMovieController;
 use App\Http\Controllers\User\CommentController;
+use App\Http\Controllers\User\FavoriteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,10 +24,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'role:user'])->group(function () {
-    Route::get('/favorites', function () {
-        return 'My Favorite Movies';
-    })->name('favorites');
-
     Route::post('/movies/{movie}/comments', [CommentController::class, 'store'])
         ->name('movies.comments.store');
 
@@ -36,13 +33,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
         ->name('comments.destroy');
 
-    Route::post('/movies/{movie}/favorite', function ($movie) {
-        return "Favorite movie {$movie}";
-    })->name('movies.favorite');
+    Route::get('/favorites', [FavoriteController::class, 'index'])
+        ->name('favorites');
 
-    Route::delete('/movies/{movie}/favorite', function ($movie) {
-        return "Remove favorite {$movie}";
-    })->name('movies.unfavorite');
+    Route::post('/movies/{movie}/favorite', [FavoriteController::class, 'store'])
+        ->name('movies.favorite');
+
+    Route::delete('/movies/{movie}/favorite', [FavoriteController::class, 'destroy'])
+        ->name('movies.unfavorite');
 });
 
 Route::middleware(['auth', 'role:admin'])
