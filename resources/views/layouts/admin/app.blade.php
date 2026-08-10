@@ -15,7 +15,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-gray-50 font-sans text-gray-900">
+<body class="bg-[#f5f7fa] font-sans text-gray-900">
 
     <x-admin.sidebar />
 

@@ -1,5 +1,4 @@
 import Alpine from 'alpinejs';
-import 'flowbite';
 import './alert';
 
 import { createIcons, icons } from 'lucide';

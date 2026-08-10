@@ -11,17 +11,13 @@
 
 <div class="bg-white">
 
-    {{-- ========================================================= --}}
     {{-- Movie Detail --}}
-    {{-- ========================================================= --}}
 
     <section class="py-8 sm:py-12 lg:py-16">
 
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
-            {{-- ================================================= --}}
             {{-- Back To Movies --}}
-            {{-- ================================================= --}}
 
             <a
                 href="{{ route('movies.index') }}"
@@ -48,16 +44,12 @@
             </a>
 
 
-            {{-- ================================================= --}}
             {{-- Movie Content --}}
-            {{-- ================================================= --}}
 
             <div class="mt-8 grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[320px_minmax(0,1fr)]">
 
 
-                {{-- ================================================= --}}
                 {{-- Poster --}}
-                {{-- ================================================= --}}
 
                 <div class="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none">
 
@@ -128,9 +120,7 @@
                 </div>
 
 
-                {{-- ================================================= --}}
                 {{-- Movie Information --}}
-                {{-- ================================================= --}}
 
                 <div class="min-w-0 flex flex-col justify-center">
 
@@ -150,9 +140,7 @@
                     </h1>
 
 
-                    {{-- ================================================= --}}
                     {{-- Meta --}}
-                    {{-- ================================================= --}}
 
                     <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600">
 
@@ -214,9 +202,7 @@
                     </div>
 
 
-                    {{-- ================================================= --}}
                     {{-- Genres --}}
-                    {{-- ================================================= --}}
 
                     @if ($movie->genres->isNotEmpty())
 
@@ -235,9 +221,7 @@
                     @endif
 
 
-                    {{-- ================================================= --}}
                     {{-- Director --}}
-                    {{-- ================================================= --}}
 
                     @if ($movie->director)
 
@@ -256,9 +240,7 @@
                     @endif
 
 
-                    {{-- ================================================= --}}
                     {{-- Synopsis --}}
-                    {{-- ================================================= --}}
 
                     @if ($movie->synopsis)
 
@@ -396,9 +378,7 @@
 
 
 
-    {{-- ========================================================= --}}
     {{-- Review --}}
-    {{-- ========================================================= --}}
 
     @if ($movie->review)
 
@@ -476,9 +456,7 @@
 
 
 
-    {{-- ========================================================= --}}
     {{-- Comments --}}
-    {{-- ========================================================= --}}
 
     <section class="pb-14 sm:pb-20">
 
@@ -486,40 +464,27 @@
 
             <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
 
-                {{-- ================================================= --}}
-                {{-- Comments Header --}}
-                {{-- ================================================= --}}
-
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-
+                <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-gray-950">
-
                         Comments
-
                         <span class="font-normal text-gray-400">
                             ({{ $movie->comments->count() }})
                         </span>
-
                     </h2>
-
                 </div>
-
-
-                {{-- ================================================= --}}
-                {{-- Comments List --}}
-                {{-- ================================================= --}}
 
                 <div class="mt-5 space-y-3">
 
                     @forelse ($movie->comments as $comment)
 
-                        <div class="rounded-xl border border-gray-200 p-4 sm:p-5">
+                        <div
+                            id="comment-{{ $comment->id }}"
+                            class="rounded-xl border border-gray-200 p-4 sm:p-5"
+                        >
 
                             <div class="flex gap-3 sm:gap-4">
 
-                                {{-- Avatar --}}
                                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100">
-
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
@@ -534,17 +499,12 @@
                                             d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a7.5 7.5 0 0 1 15 0"
                                         />
                                     </svg>
-
                                 </div>
 
-
-                                {{-- Content --}}
                                 <div class="min-w-0 flex-1">
 
                                     <div class="flex items-start justify-between gap-3">
-
                                         <div class="min-w-0">
-
                                             <p class="truncate text-sm font-semibold text-gray-950">
                                                 {{ $comment->user->name }}
                                             </p>
@@ -552,40 +512,72 @@
                                             <p class="mt-0.5 text-xs text-gray-400">
                                                 {{ $comment->created_at->diffForHumans() }}
                                             </p>
-
                                         </div>
-
                                     </div>
 
+                                    <div id="comment-content-{{ $comment->id }}">
+                                        <p class="mt-3 break-words text-sm leading-6 text-gray-600">
+                                            {{ $comment->comment }}
+                                        </p>
+                                    </div>
 
-                                    {{-- Comment --}}
-                                    <p class="mt-3 break-words text-sm leading-6 text-gray-600">
-                                        {{ $comment->comment }}
-                                    </p>
-
-
-                                    {{-- Owner Actions --}}
                                     @auth
-
                                         @if ($comment->user_id === auth()->id())
 
-                                            <div class="mt-4 flex flex-wrap items-center gap-4">
+                                            <form
+                                                id="comment-edit-form-{{ $comment->id }}"
+                                                action="{{ route('comments.update', $comment) }}"
+                                                method="POST"
+                                                class="mt-3 hidden"
+                                            >
+                                                @csrf
+                                                @method('PUT')
 
+                                                <textarea
+                                                    name="comment"
+                                                    rows="3"
+                                                    maxlength="1000"
+                                                    required
+                                                    class="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-400 focus:ring-0"
+                                                >{{ $comment->comment }}</textarea>
+
+                                                <div class="mt-3 flex items-center gap-3">
+                                                    <button
+                                                        type="submit"
+                                                        class="rounded-lg bg-gray-950 px-4 py-2 text-xs font-semibold text-white transition hover:bg-gray-800"
+                                                    >
+                                                        Save Changes
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        onclick="cancelEdit({{ $comment->id }})"
+                                                        class="rounded-lg border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-600 transition hover:bg-gray-50"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                            <div
+                                                id="comment-actions-{{ $comment->id }}"
+                                                class="mt-4 flex flex-wrap items-center gap-4"
+                                            >
                                                 <button
                                                     type="button"
+                                                    onclick="editComment({{ $comment->id }})"
                                                     class="text-xs font-semibold text-gray-600 transition hover:text-gray-950"
                                                 >
                                                     Edit
                                                 </button>
 
-
                                                 <form
                                                     action="{{ route('comments.destroy', $comment) }}"
                                                     method="POST"
+                                                    class="delete-comment-form"
+                                                    data-comment="{{ Str::limit($comment->comment, 60) }}"
                                                 >
-
                                                     @csrf
-
                                                     @method('DELETE')
 
                                                     <button
@@ -594,13 +586,10 @@
                                                     >
                                                         Delete
                                                     </button>
-
                                                 </form>
-
                                             </div>
 
                                         @endif
-
                                     @endauth
 
                                 </div>
@@ -612,7 +601,6 @@
                     @empty
 
                         <div class="rounded-xl border border-dashed border-gray-300 px-6 py-12 text-center">
-
                             <p class="text-sm font-medium text-gray-700">
                                 Belum ada komentar.
                             </p>
@@ -620,17 +608,11 @@
                             <p class="mt-1 text-sm text-gray-500">
                                 Jadilah yang pertama memberikan pendapat tentang film ini.
                             </p>
-
                         </div>
 
                     @endforelse
 
                 </div>
-
-
-                {{-- ================================================= --}}
-                {{-- Comment Form --}}
-                {{-- ================================================= --}}
 
                 <div class="mt-4">
 
@@ -641,14 +623,11 @@
                             method="POST"
                             class="rounded-xl border border-gray-200 p-4 sm:p-5"
                         >
-
                             @csrf
 
                             <div class="flex flex-col gap-4 sm:flex-row">
 
-                                {{-- Avatar --}}
                                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100">
-
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
@@ -663,11 +642,8 @@
                                             d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a7.5 7.5 0 0 1 15 0"
                                         />
                                     </svg>
-
                                 </div>
 
-
-                                {{-- Form Content --}}
                                 <div class="min-w-0 flex-1">
 
                                     <textarea
@@ -679,13 +655,17 @@
                                         class="w-full resize-none rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-gray-400 focus:ring-0"
                                     ></textarea>
 
+                                    @error('comment')
+                                        <p class="mt-2 text-xs text-red-600">
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
 
                                     <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
                                         <p class="text-xs text-gray-400">
                                             Be kind and respectful.
                                         </p>
-
 
                                         <button
                                             type="submit"
@@ -705,7 +685,6 @@
                     @else
 
                         <div class="rounded-xl border border-gray-200 px-5 py-6 text-center">
-
                             <p class="text-sm text-gray-600">
                                 Login untuk ikut memberikan komentar.
                             </p>
@@ -716,7 +695,6 @@
                             >
                                 Login
                             </a>
-
                         </div>
 
                     @endauth
@@ -729,11 +707,51 @@
 
     </section>
 
+    @push('scripts')
+        <script>
+            function editComment(commentId) {
+                const content = document.getElementById(`comment-content-${commentId}`);
+                const form = document.getElementById(`comment-edit-form-${commentId}`);
+                const actions = document.getElementById(`comment-actions-${commentId}`);
+
+                if (!content || !form || !actions) return;
+
+                content.classList.add('hidden');
+                actions.classList.add('hidden');
+                form.classList.remove('hidden');
+            }
+
+            function cancelEdit(commentId) {
+                const content = document.getElementById(`comment-content-${commentId}`);
+                const form = document.getElementById(`comment-edit-form-${commentId}`);
+                const actions = document.getElementById(`comment-actions-${commentId}`);
+
+                if (!content || !form || !actions) return;
+
+                content.classList.remove('hidden');
+                actions.classList.remove('hidden');
+                form.classList.add('hidden');
+            }
+
+            document.addEventListener('submit', (event) => {
+                const form = event.target.closest('.delete-comment-form');
+
+                if (!form) return;
+
+                event.preventDefault();
+
+                window.showConfirmAlert(
+                    'Hapus komentar?',
+                    `Apakah Anda yakin ingin menghapus komentar "${form.dataset.comment}"? Data yang dihapus tidak dapat dikembalikan.`
+                ).then((result) => {
+                    if (result.isConfirmed) form.submit();
+                });
+            });
+        </script>
+    @endpush
 
 
-    {{-- ========================================================= --}}
     {{-- You May Also Like --}}
-    {{-- ========================================================= --}}
 
     <section class="pb-14 sm:pb-20">
 

@@ -67,75 +67,23 @@
 
         <section class="relative hidden w-1/2 overflow-hidden bg-[#071426] p-8 text-white lg:flex lg:flex-col">
 
+            {{-- Cinema background photo with a readable text overlay --}}
+            <img
+                src="{{ asset('storage/web/foto bioskop.jpg') }}"
+                alt="Suasana bioskop"
+                class="absolute inset-0 h-full w-full object-cover"
+            >
+
+            <div class="absolute inset-0 bg-gradient-to-b from-[#071426]/75 via-[#071426]/55 to-[#071426]/95"></div>
+
             {{-- Decorative circles --}}
-            <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full border border-white/10"></div>
-            <div class="absolute -bottom-24 -left-24 h-64 w-64 rounded-full border border-white/10"></div>
+            <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full border border-white/15"></div>
+            <div class="absolute -bottom-24 -left-24 h-64 w-64 rounded-full border border-white/15"></div>
 
 
             {{-- Logo --}}
             <div class="relative z-10">
                 <x-ruang-cinema-logo variant="white" fit="contain" class="h-14 w-52 object-center" />
-            </div>
-
-
-            {{-- Movie Preview --}}
-            <div class="relative z-10 mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-
-                <div class="mb-4 flex items-center justify-between border-b border-white/10 pb-3">
-
-                    <span class="text-xs font-semibold">
-                        Ruang
-                    </span>
-
-                    <div class="flex gap-4 text-[9px] text-gray-500">
-                        <span>Home</span>
-                        <span>Movies</span>
-                        <span>Genres</span>
-                        <span>About</span>
-                    </div>
-
-                    <div class="h-5 w-16 rounded-full bg-white/5"></div>
-
-                </div>
-
-
-                <h3 class="mb-3 text-sm font-semibold">
-                    Popular Movies
-                </h3>
-
-
-                <div class="grid grid-cols-5 gap-2">
-
-                    @foreach ([
-                        ['The Batman', '2022'],
-                        ['Dune', '2024'],
-                        ['Interstellar', '2014'],
-                        ['Inception', '2010'],
-                        ['The Dark Knight', '2008'],
-                    ] as $movie)
-
-                        <div class="overflow-hidden rounded-lg bg-white/5">
-
-                            <div class="h-28 bg-gradient-to-b from-gray-700 to-gray-900"></div>
-
-                            <div class="p-2">
-
-                                <p class="truncate text-[8px] font-semibold">
-                                    {{ $movie[0] }}
-                                </p>
-
-                                <p class="mt-1 text-[7px] text-gray-500">
-                                    {{ $movie[1] }}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    @endforeach
-
-                </div>
-
             </div>
 
 
@@ -184,7 +132,7 @@
 
                     <p class="mx-auto mt-2 max-w-sm text-sm leading-5 text-gray-500 dark:text-gray-400">
                         Masuk untuk melanjutkan pengalaman
-                        menonton film favorit kamu.
+                        membaca artikel dan riview film favorit kamu.
                     </p>
 
                 </div>

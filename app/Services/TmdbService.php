@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class TmdbService
 {
+    private const RESPONSE_LANGUAGE = 'id-ID';
+
     private function client(): PendingRequest
     {
         $token = config('services.tmdb.token');
@@ -31,7 +33,7 @@ class TmdbService
         $response = $this->client()->get('/search/movie', [
             'query' => $query,
             'include_adult' => false,
-            'language' => 'en-US',
+            'language' => self::RESPONSE_LANGUAGE,
             'page' => 1,
         ])->throw();
 
@@ -39,7 +41,9 @@ class TmdbService
             ->take(8)
             ->map(fn (array $movie): array => [
                 'id' => $movie['id'],
-                'title' => $movie['title'] ?? '',
+                // Keep the title in the movie's original language while the
+                // overview and other metadata follow the Indonesian response.
+                'title' => $movie['original_title'] ?? $movie['title'] ?? '',
                 'release_date' => $movie['release_date'] ?? null,
                 'overview' => $movie['overview'] ?? '',
                 'poster_path' => $movie['poster_path'] ?? null,
@@ -56,7 +60,7 @@ class TmdbService
     {
         $movie = $this->client()->get("/movie/{$movieId}", [
             'append_to_response' => 'credits',
-            'language' => 'en-US',
+            'language' => self::RESPONSE_LANGUAGE,
         ])->throw()->json();
 
         $director = collect(data_get($movie, 'credits.crew', []))
@@ -64,7 +68,9 @@ class TmdbService
 
         return [
             'id' => $movie['id'],
-            'title' => $movie['title'] ?? '',
+            // TMDB's original_title is independent from the requested
+            // response language and preserves the film's original title.
+            'title' => $movie['original_title'] ?? $movie['title'] ?? '',
             'release_date' => $movie['release_date'] ?? null,
             'duration' => $movie['runtime'] ?? null,
             'director' => $director['name'] ?? null,
@@ -76,6 +82,10 @@ class TmdbService
             'poster_url' => $this->posterUrl($movie['poster_path'] ?? null),
             'genres' => collect($movie['genres'] ?? [])
                 ->pluck('name')
+                ->values()
+                ->all(),
+            'genre_ids' => collect($movie['genres'] ?? [])
+                ->pluck('id')
                 ->values()
                 ->all(),
         ];

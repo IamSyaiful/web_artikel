@@ -21,27 +21,30 @@ class CommentController extends Controller
             'comment' => $validated['comment'],
         ]);
 
-        return response()->json([
-            'message' => 'Comment added successfully.',
-            'comment' => $comment->load('user'),
-        ], 201);
+        return redirect()
+            ->route('movies.show', $movie)
+            ->with('success', 'Comment posted successfully.');
     }
 
     public function destroy(Comment $comment)
     {
         if ($comment->user_id !== auth()->id()) {
-            return response()->json(['message'=> 'You Can Only Delete Your Own Comments.'], 403);
+            return redirect()
+                ->back()
+                ->with('error', 'You can only delete your own comments.');
         }
 
         $comment->delete();
 
-        return response()->json(['message' => 'Comment deleted successfully.']);
+        return redirect()
+            ->back()
+            ->with('success', 'Komentar berhasil dihapus.');
     }
 
     public function update(Request $request, Comment $comment)
     {
         if ($comment->user_id !== auth()->id()) {
-            return response()->json(['message' => 'You can only edit your own comments.'], 403);
+            abort(403);
         }
 
         $validated = $request->validate([
@@ -52,9 +55,8 @@ class CommentController extends Controller
             'comment' => $validated['comment'],
         ]);
 
-        return response()->json([
-            'message' => 'Comment updated successfully.',
-            'comment' => $comment->load('user'),
-        ]);
+        return redirect()
+            ->route('movies.show', $comment->movie_id)
+            ->with('success', 'Comment updated successfully.');
     }
 }

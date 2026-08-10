@@ -3,15 +3,15 @@
     <div class="flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
 
         {{-- Page Title --}}
-        <div>
+        <div class="flex items-center gap-8">
+
+            <button type="button" class="text-gray-600 lg:hidden" aria-label="Open navigation">
+                <x-icon name="menu" size="22" />
+            </button>
 
             <h1 class="text-xl font-bold text-gray-900">
                 @yield('page-title', 'Dashboard')
             </h1>
-
-            <p class="mt-0.5 text-sm text-gray-500">
-                Welcome back, {{ auth()->user()->name }}
-            </p>
 
         </div>
 
@@ -31,7 +31,7 @@
 
             </div>
 
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100">
 
                 <x-icon
                     name="user-round"

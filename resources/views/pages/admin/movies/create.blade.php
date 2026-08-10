@@ -123,6 +123,22 @@
 
                     <div class="grid grid-cols-2 gap-x-6 gap-y-4 rounded-lg border border-gray-200 bg-gray-50 p-5 sm:grid-cols-3 lg:grid-cols-4">
 
+                        @php
+                            $tmdbGenreIds = [
+                                'Action' => 28,
+                                'Adventure' => 12,
+                                'Animation' => 16,
+                                'Comedy' => 35,
+                                'Crime' => 80,
+                                'Drama' => 18,
+                                'Fantasy' => 14,
+                                'Horror' => 27,
+                                'Romance' => 10749,
+                                'Sci-Fi' => 878,
+                                'Thriller' => 53,
+                            ];
+                        @endphp
+
                         @foreach ($genres as $genre)
 
                             <x-admin.checkbox
@@ -130,6 +146,7 @@
                                 :value="$genre->id"
                                 :label="$genre->name"
                                 data-genre-name="{{ strtolower($genre->name) }}"
+                                data-tmdb-genre-id="{{ $tmdbGenreIds[$genre->name] ?? '' }}"
                                 :checked="in_array($genre->id, old('genres', []))"
                             />
 
@@ -219,10 +236,10 @@
             setValue('synopsis', movie.synopsis);
             posterPathInput.value = movie.poster_path ?? '';
 
+            const importedGenreIds = new Set((movie.genre_ids ?? []).map((id) => String(id)));
+
             document.querySelectorAll('[data-genre-name]').forEach((checkbox) => {
-                checkbox.checked = (movie.genres ?? []).some((genre) =>
-                    checkbox.dataset.genreName === genre.toLowerCase()
-                );
+                checkbox.checked = importedGenreIds.has(checkbox.dataset.tmdbGenreId);
             });
 
             if (movie.poster_url) {

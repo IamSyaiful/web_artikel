@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Flowbite DataTables compatibility with the project's Tailwind 3 setup */
+/* DataTable styling for the Preline-inspired dashboard tables. */
 .datatable-wrapper {
     width: 100% !important;
 }

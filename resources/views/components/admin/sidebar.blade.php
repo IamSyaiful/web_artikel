@@ -84,7 +84,10 @@
 
         <a
             href="{{ route('profile.edit') }}"
-            class="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-gray-300 transition hover:bg-white/5 hover:text-white">
+            class="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition
+            {{ request()->routeIs('profile.*')
+                ? 'bg-white/10 text-white'
+                : 'text-gray-300 hover:bg-white/5 hover:text-white' }}">
 
             <x-icon name="user-round" size="19" />
 

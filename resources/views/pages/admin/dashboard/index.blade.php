@@ -20,7 +20,7 @@
     {{-- Recent Movies --}}
     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
-        <div class="border-b border-gray-200 px-5 py-4">
+        <div class="border-b border-gray-200 px-5 py-4 sm:px-6">
             <h2 class="text-lg font-semibold text-gray-900">
                 Recent Movies
             </h2>
@@ -30,12 +30,12 @@
             </p>
         </div>
 
-        <div class="overflow-x-auto p-5">
+        <div class="dashboard-datatable-wrapper overflow-x-auto p-5 sm:p-6">
 
-        <table id="recent-movies-table" class="w-full text-left text-sm text-gray-500">
+        <table id="recent-movies-table" class="min-w-full divide-y divide-gray-200 text-left text-sm text-gray-500">
 
-            <thead>
-                <tr>
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+                <tr class="border-y border-gray-200">
 
                     <th scope="col">Movie</th>
 
@@ -50,7 +50,7 @@
 
                 @foreach ($recentMovies as $movie)
 
-                    <tr>
+                    <tr class="divide-x-0 divide-y divide-gray-100">
 
                         <td class="font-medium text-gray-900 whitespace-nowrap">
                             {{ $movie->title }}
@@ -79,7 +79,7 @@
     {{-- Recent Users --}}
     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 
-        <div class="border-b border-gray-200 px-5 py-4">
+        <div class="border-b border-gray-200 px-5 py-4 sm:px-6">
             <h2 class="text-lg font-semibold text-gray-900">
                 Recent Users
             </h2>
@@ -89,12 +89,12 @@
             </p>
         </div>
 
-        <div class="overflow-x-auto p-5">
+        <div class="dashboard-datatable-wrapper overflow-x-auto p-5 sm:p-6">
 
-        <table id="recent-users-table" class="w-full text-left text-sm text-gray-500">
+        <table id="recent-users-table" class="min-w-full divide-y divide-gray-200 text-left text-sm text-gray-500">
 
-            <thead>
-                <tr>
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500">
+                <tr class="border-y border-gray-200">
 
                     <th scope="col">Name</th>
 
@@ -109,7 +109,7 @@
 
                 @foreach ($recentUsers as $user)
 
-                    <tr>
+                    <tr class="divide-x-0 divide-y divide-gray-100">
 
                         <td class="font-medium text-gray-900 whitespace-nowrap">
                             {{ $user->name }}

@@ -97,12 +97,17 @@ class MovieController extends Controller
 
     public function show(Movie $movie)
     {
-        $movie->load('genres', 'comments.user');
+        $movie->load([
+            'genres',
+            'comments' => function ($query) {
+                $query
+                    ->with('user')
+                    ->latest();
+            },
+        ]);
 
-        // Ambil ID genre dari movie saat ini
         $genreIds = $movie->genres->pluck('id');
 
-        // Ambil film terkait berdasarkan genre
         $relatedMovies = Movie::with('genres')
             ->where('id', '!=', $movie->id)
             ->when(
@@ -131,7 +136,6 @@ class MovieController extends Controller
             $relatedMovies = $relatedMovies->concat($additionalMovies);
         }
 
-        // Cek favorite state
         $isFavorite = false;
 
         if (auth()->check()) {
