@@ -10,77 +10,33 @@
 {{-- HERO SECTION --}}
 {{-- ========================================================= --}}
 
-<section class="border-b border-gray-200 bg-gray-50">
+<section
+    class="relative overflow-hidden border-b border-gray-200 bg-gray-950 bg-cover bg-center"
+    style="background-image: linear-gradient(90deg, rgba(3, 7, 18, 0.94) 0%, rgba(3, 7, 18, 0.78) 38%, rgba(3, 7, 18, 0.34) 72%, rgba(3, 7, 18, 0.2) 100%), linear-gradient(180deg, rgba(3, 7, 18, 0.18) 0%, rgba(3, 7, 18, 0.08) 55%, rgba(3, 7, 18, 0.82) 100%), url('{{ asset('storage/web/background_movie.jpg') }}');"
+>
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div class="grid min-h-[280px] items-center gap-10 py-14 lg:grid-cols-2 lg:py-16">
 
             {{-- Hero Text --}}
             <div>
 
-                <span class="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">
+                <span class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-200">
                     Ruang Cinema
                 </span>
 
-                <h1 class="mt-4 text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl">
+                <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
                     Movies
                 </h1>
 
-                <p class="mt-4 max-w-xl text-base leading-7 text-gray-600 sm:text-lg">
+                <p class="mt-4 max-w-xl text-base leading-7 text-gray-100 sm:text-lg">
                     Temukan film favoritmu. Review, rating, dan simpan film
                     yang ingin kamu tonton.
                 </p>
 
             </div>
 
-
-            {{-- Hero Illustration --}}
-            <div class="hidden justify-center lg:flex">
-
-                <div class="relative flex h-48 w-[360px] items-center justify-center">
-
-                    {{-- Decorative circles --}}
-                    <div class="absolute h-40 w-40 rounded-full border border-gray-200"></div>
-
-                    <div class="absolute h-52 w-52 rounded-full border border-dashed border-gray-200"></div>
-
-
-                    {{-- Film Reel --}}
-                    <div class="relative z-10 flex h-32 w-32 items-center justify-center rounded-full border-2 border-gray-300">
-
-                        <div class="grid h-20 w-20 grid-cols-2 gap-2">
-
-                            <span class="rounded-full border-2 border-gray-300"></span>
-                            <span class="rounded-full border-2 border-gray-300"></span>
-                            <span class="rounded-full border-2 border-gray-300"></span>
-                            <span class="rounded-full border-2 border-gray-300"></span>
-
-                        </div>
-
-                        <div class="absolute h-6 w-6 rounded-full border-2 border-gray-300"></div>
-
-                    </div>
-
-
-                    {{-- Clapper --}}
-                    <div class="absolute right-4 top-5 z-20 w-36 rotate-[-8deg]">
-
-                        <div class="h-5 rounded-md border-2 border-gray-300 bg-gray-200"></div>
-
-                        <div class="mt-1 h-20 rounded-md border-2 border-gray-300 bg-gray-100">
-
-                            <div class="mt-5 h-px bg-gray-300"></div>
-
-                            <div class="mt-5 h-px bg-gray-300"></div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
 
         </div>
 
@@ -333,7 +289,7 @@
             {{-- MOVIE CONTENT --}}
             {{-- ================================================= --}}
 
-            <div class="min-w-0">
+            <div class="flex min-w-0 flex-col">
 
 
                 {{-- Content Header --}}
@@ -493,142 +449,41 @@
                 </div>
 
 
-                {{-- Pagination --}}
-                @if ($movies->hasPages())
-                    <div class="mt-10 flex justify-center">
-                        <nav
-                            class="flex items-center gap-2"
-                            aria-label="Pagination"
-                        >
+                {{-- Preline pagination --}}
+                @if ($movies->total() > 0)
+                    <nav class="mt-auto flex items-center justify-center gap-x-1 pt-10" aria-label="Pagination">
+                        @if ($movies->onFirstPage())
+                            <span class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg px-2.5 py-2 text-sm text-gray-300" aria-disabled="true">
+                                Previous
+                            </span>
+                        @else
+                            <a href="{{ $movies->previousPageUrl() }}" class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg px-2.5 py-2 text-sm text-gray-800 transition hover:bg-gray-100" aria-label="Previous page">
+                                Previous
+                            </a>
+                        @endif
 
-                            {{-- Previous --}}
-                            @if ($movies->onFirstPage())
-
-                                <span
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-300"
-                                    aria-disabled="true"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.8"
-                                        stroke="currentColor"
-                                        class="h-4 w-4"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="m14.5 6-6 6 6 6"
-                                        />
-                                    </svg>
+                        @foreach ($movies->getUrlRange(1, $movies->lastPage()) as $page => $url)
+                            @if ($page === $movies->currentPage())
+                                <span class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg bg-gray-950 px-3 py-2 text-sm font-medium text-white" aria-current="page">
+                                    {{ $page }}
                                 </span>
-
                             @else
-
-                                <a
-                                    href="{{ $movies->previousPageUrl() }}"
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
-                                    aria-label="Previous page"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.8"
-                                        stroke="currentColor"
-                                        class="h-4 w-4"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="m14.5 6-6 6 6 6"
-                                        />
-                                    </svg>
+                                <a href="{{ $url }}" class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg px-3 py-2 text-sm text-gray-800 transition hover:bg-gray-100" aria-label="Go to page {{ $page }}">
+                                    {{ $page }}
                                 </a>
-
                             @endif
+                        @endforeach
 
-
-                            {{-- Page Numbers --}}
-                            @foreach ($movies->getUrlRange(
-                                max(1, $movies->currentPage() - 2),
-                                min($movies->lastPage(), $movies->currentPage() + 2)
-                            ) as $page => $url)
-
-                                @if ($page == $movies->currentPage())
-
-                                    <span
-                                        class="inline-flex h-9 min-w-9 items-center justify-center rounded-md bg-gray-950 px-3 text-sm font-semibold text-white"
-                                        aria-current="page"
-                                    >
-                                        {{ $page }}
-                                    </span>
-
-                                @else
-
-                                    <a
-                                        href="{{ $url }}"
-                                        class="inline-flex h-9 min-w-9 items-center justify-center rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
-                                    >
-                                        {{ $page }}
-                                    </a>
-
-                                @endif
-
-                            @endforeach
-
-
-                            {{-- Next --}}
-                            @if ($movies->hasMorePages())
-
-                                <a
-                                    href="{{ $movies->nextPageUrl() }}"
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
-                                    aria-label="Next page"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.8"
-                                        stroke="currentColor"
-                                        class="h-4 w-4"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="m9.5 6 6 6-6 6"
-                                        />
-                                    </svg>
-                                </a>
-
-                            @else
-
-                                <span
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-300"
-                                    aria-disabled="true"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.8"
-                                        stroke="currentColor"
-                                        class="h-4 w-4"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="m9.5 6 6 6-6 6"
-                                        />
-                                    </svg>
-                                </span>
-
-                            @endif
-
-                        </nav>
-                    </div>
+                        @if ($movies->hasMorePages())
+                            <a href="{{ $movies->nextPageUrl() }}" class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg px-2.5 py-2 text-sm text-gray-800 transition hover:bg-gray-100" aria-label="Next page">
+                                Next
+                            </a>
+                        @else
+                            <span class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg px-2.5 py-2 text-sm text-gray-300" aria-disabled="true">
+                                Next
+                            </span>
+                        @endif
+                    </nav>
                 @endif
 
             </div>

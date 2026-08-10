@@ -10,9 +10,16 @@ window.createIcons = createIcons;
 Alpine.start();
 
 const initIcons = () => {
-    createIcons({
-        icons,
-    });
+    const render = () => {
+        try {
+            createIcons({ icons });
+        } catch (error) {
+            console.error('[Ruang Cinema] Lucide initialization failed:', error);
+        }
+    };
+
+    render();
+    requestAnimationFrame(render);
 };
 
 const initDataTables = () => {
@@ -87,11 +94,58 @@ const initSlugPreviews = () => {
     });
 };
 
+const initHorizontalCarousels = () => {
+    document.querySelectorAll('[data-horizontal-carousel]').forEach((carousel) => {
+        const viewport = carousel.querySelector('[data-horizontal-carousel-viewport]');
+        const track = carousel.querySelector('[data-horizontal-carousel-track]');
+        const button = carousel.querySelector('[data-horizontal-carousel-next]');
+        const previousButton = carousel.querySelector('[data-horizontal-carousel-prev]');
+
+        if (!viewport || !track || !button || !previousButton) return;
+        if (button.dataset.carouselBound) return;
+
+        button.dataset.carouselBound = 'true';
+        previousButton.dataset.carouselBound = 'true';
+        let position = 0;
+
+        const move = (direction) => {
+            const firstCard = track.firstElementChild;
+            if (!firstCard) return;
+
+            const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+            const step = firstCard.getBoundingClientRect().width + gap;
+            const maxPosition = Math.max(track.scrollWidth - viewport.clientWidth, 0);
+
+            position = Math.max(0, Math.min(position + (step * direction), maxPosition));
+            track.style.transform = `translateX(-${position}px)`;
+
+            previousButton.classList.toggle('hidden', position <= 0);
+            previousButton.classList.toggle('flex', position > 0);
+            button.classList.toggle('pointer-events-none', position >= maxPosition);
+            button.classList.toggle('opacity-40', position >= maxPosition);
+        };
+
+        button.addEventListener('click', () => move(1));
+        previousButton.addEventListener('click', () => move(-1));
+    });
+};
+
+const initPreline = async () => {
+    try {
+        await import('preline');
+        window.HSStaticMethods?.autoInit();
+    } catch (error) {
+        console.error('[Ruang Cinema] Preline initialization failed:', error);
+    }
+};
+
 const init = () => {
     initIcons();
     initDataTables();
     initImagePreviews();
     initSlugPreviews();
+    initHorizontalCarousels();
+    initPreline();
 };
 
 if (document.readyState === 'loading') {

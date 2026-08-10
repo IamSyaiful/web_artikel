@@ -12,9 +12,9 @@ class HomeController extends Controller
     public function index()
     {
         $movies = Movie::with('genres')
+            ->orderByDesc('release_date')
             ->orderByDesc('rating')
-            ->latest()
-            ->take(4)
+            ->take(10)
             ->get();
 
         $genres = Genre::withCount('movies')

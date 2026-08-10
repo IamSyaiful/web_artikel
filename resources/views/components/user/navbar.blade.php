@@ -18,30 +18,26 @@
 
             <a
                 href="{{ route('home') }}"
-                class="text-sm font-medium text-gray-700 transition hover:text-gray-950"
+                class="group relative py-2 text-sm font-medium text-gray-700 transition hover:text-gray-950"
             >
                 Home
+                <span class="absolute inset-x-0 bottom-0 h-0.5 origin-center scale-x-0 rounded-full bg-gray-950 transition-transform duration-300 ease-out group-hover:scale-x-100 @if (request()->routeIs('home')) scale-x-100 @endif"></span>
             </a>
 
             <a
                 href="{{ route('movies.index') }}"
-                class="text-sm font-medium text-gray-700 transition hover:text-gray-950"
+                class="group relative py-2 text-sm font-medium text-gray-700 transition hover:text-gray-950"
             >
                 Movies
-            </a>
-
-            <a
-                href="#genres"
-                class="text-sm font-medium text-gray-700 transition hover:text-gray-950"
-            >
-                Genres
+                <span class="absolute inset-x-0 bottom-0 h-0.5 origin-center scale-x-0 rounded-full bg-gray-950 transition-transform duration-300 ease-out group-hover:scale-x-100 @if (request()->routeIs('movies.*')) scale-x-100 @endif"></span>
             </a>
 
             <a
                 href="#about"
-                class="text-sm font-medium text-gray-700 transition hover:text-gray-950"
+                class="group relative py-2 text-sm font-medium text-gray-700 transition hover:text-gray-950"
             >
                 About
+                <span class="absolute inset-x-0 bottom-0 h-0.5 origin-center scale-x-0 rounded-full bg-gray-950 transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
             </a>
 
         </div>
@@ -280,33 +276,28 @@
                     <a
                         href="{{ route('home') }}"
                         @click="open = false"
-                        class="flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        class="group relative flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:text-gray-950"
                     >
                         Home
+                        <span class="absolute bottom-2 left-3 h-0.5 w-10 origin-left scale-x-0 rounded-full bg-gray-950 transition-transform duration-300 ease-out group-hover:scale-x-100 @if (request()->routeIs('home')) scale-x-100 @endif"></span>
                     </a>
 
                     <a
                         href="{{ route('movies.index') }}"
                         @click="open = false"
-                        class="flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        class="group relative flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:text-gray-950"
                     >
                         Movies
-                    </a>
-
-                    <a
-                        href="#genres"
-                        @click="open = false"
-                        class="flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
-                    >
-                        Genres
+                        <span class="absolute bottom-2 left-3 h-0.5 w-10 origin-left scale-x-0 rounded-full bg-gray-950 transition-transform duration-300 ease-out group-hover:scale-x-100 @if (request()->routeIs('movies.*')) scale-x-100 @endif"></span>
                     </a>
 
                     <a
                         href="#about"
                         @click="open = false"
-                        class="flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        class="group relative flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:text-gray-950"
                     >
                         About
+                        <span class="absolute bottom-2 left-3 h-0.5 w-10 origin-left scale-x-0 rounded-full bg-gray-950 transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
                     </a>
 
                 </div>

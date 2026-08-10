@@ -590,17 +590,23 @@
 
 
             {{-- Movies Carousel --}}
-            <div class="relative mt-8">
+            <div class="relative mt-8" data-horizontal-carousel>
 
                 {{-- Movie List --}}
                 <div
-                    id="trending-movies"
-                    class="flex gap-5 overflow-x-auto scroll-smooth pb-4 pr-12 scrollbar-hide"
+                    data-horizontal-carousel-viewport
+                    class="overflow-hidden"
                 >
 
-                    @forelse ($movies->take(5) as $movie)
+                    <div
+                        id="trending-movies"
+                        data-horizontal-carousel-track
+                        class="flex gap-5 pb-4 transition-transform duration-500 ease-out"
+                    >
 
-                        <div class="w-[180px] shrink-0 sm:w-[200px]">
+                    @forelse ($movies as $movie)
+
+                        <div class="w-[78%] shrink-0 sm:w-[48%] lg:w-[calc((100%-5rem)/5)]">
 
                             <x-user.movie-card
                                 :movie="$movie"
@@ -640,15 +646,26 @@
 
                     @endforelse
 
+                    </div>
+
                 </div>
 
+
+                {{-- Previous Button --}}
+                @if ($movies->count() > 5)
+                    <button type="button" data-horizontal-carousel-prev class="absolute left-0 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-800 shadow-sm transition hover:border-gray-400 hover:bg-gray-50" aria-label="Previous movies">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
+                        </svg>
+                    </button>
+                @endif
 
                 {{-- Next Button --}}
                 @if ($movies->count() > 5)
 
                     <button
                         type="button"
-                        onclick="document.getElementById('trending-movies').scrollBy({ left: 420, behavior: 'smooth' })"
+                        data-horizontal-carousel-next
                         class="absolute right-0 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-800 shadow-sm transition hover:border-gray-400 hover:bg-gray-50"
                         aria-label="Next movies"
                     >
