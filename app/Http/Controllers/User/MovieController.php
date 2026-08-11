@@ -105,6 +105,7 @@ class MovieController extends Controller
     public function show(Movie $movie)
     {
         $movie->load([
+            'author',
             'genres',
             'comments' => function ($query) {
                 $query

@@ -433,7 +433,7 @@
                             <div>
 
                                 <p class="text-sm font-semibold text-gray-950">
-                                    Ruang Cinema
+                                    {{ $movie->author?->name ?? 'Ruang Cinema' }}
                                 </p>
 
                                 <p class="text-xs text-gray-500">

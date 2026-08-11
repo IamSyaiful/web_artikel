@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Movie;
 use Illuminate\Support\Str;
 use App\Models\Genre;
+use App\Models\User;
 
 class MovieSeeder extends Seeder
 {
@@ -15,6 +16,8 @@ class MovieSeeder extends Seeder
      */
     public function run(): void
     {
+        $authorId = User::where('role', 'admin')->value('id');
+
         $movies = [
             [
                 'title' => 'Interstellar',
@@ -46,6 +49,7 @@ class MovieSeeder extends Seeder
             $movie = Movie::create([
                 ...$movieData,
                 'slug' => Str::slug($movieData['title']),
+                'user_id' => $authorId,
             ]);
 
             $genreIds = Genre::whereIn('name', $genres)

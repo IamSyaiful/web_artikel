@@ -87,7 +87,7 @@ class TmdbService
         ];
     }
 
-    public function storePoster(string $posterPath): ?string
+    public function storePoster(string $posterPath, string $directory = 'movies/posters'): ?string
     {
         if (! Str::startsWith($posterPath, '/')) {
             return null;
@@ -104,7 +104,7 @@ class TmdbService
             'image/webp' => 'webp',
             default => 'jpg',
         };
-        $path = 'movies/posters/tmdb-'.Str::uuid().'.'.$extension;
+        $path = trim($directory, '/').'/tmdb-'.Str::uuid().'.'.$extension;
 
         Storage::disk('public')->put($path, $response->body());
 

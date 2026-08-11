@@ -37,13 +37,24 @@
 
             <div class="space-y-8 p-6 sm:p-8">
 
-                <x-admin.input
-                    name="title"
-                    label="Movie Title"
-                    :value="$movie->title"
-                    placeholder="Enter movie title"
-                    required
-                />
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <x-admin.input
+                        name="title"
+                        label="Movie Title"
+                        :value="$movie->title"
+                        placeholder="Enter movie title"
+                        required
+                    />
+
+                    <x-admin.input
+                        name="slug"
+                        label="Slug"
+                        :value="$movie->slug"
+                        placeholder="movie-slug"
+                        disabled
+                        data-movie-slug
+                    />
+                </div>
 
                 <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr_1fr]">
                     <div>
@@ -174,3 +185,23 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const title = document.getElementById('title');
+        const slug = document.querySelector('[data-movie-slug]');
+        if (!title || !slug) return;
+
+        const syncSlug = () => {
+            slug.value = title.value
+                .toLowerCase()
+                .trim()
+                .replace(/[^\p{L}\p{N}]+/gu, '-')
+                .replace(/^-+|-+$/g, '');
+        };
+
+        title.addEventListener('input', syncSlug);
+    });
+</script>
+@endpush

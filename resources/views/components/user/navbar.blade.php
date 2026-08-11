@@ -128,6 +128,14 @@
                             Favorite
                         </a>
 
+                        <a
+                            href="{{ route('submissions.index') }}"
+                            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        >
+                            <x-icon name="file-plus-2" size="17" />
+                            My Submissions
+                        </a>
+
                         <div class="my-1 border-t border-gray-100"></div>
 
                         <form method="POST" action="{{ route('logout') }}">

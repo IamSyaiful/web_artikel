@@ -7,10 +7,10 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -24,7 +24,6 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-
     protected $fillable = [
         'name',
         'email',
@@ -58,5 +57,15 @@ class User extends Authenticatable
     public function favoritedMovies(): BelongsToMany
     {
         return $this->belongsToMany(Movie::class, 'favorites');
+    }
+
+    public function movies(): HasMany
+    {
+        return $this->hasMany(Movie::class);
+    }
+
+    public function movieSubmissions(): HasMany
+    {
+        return $this->hasMany(MovieSubmission::class);
     }
 }

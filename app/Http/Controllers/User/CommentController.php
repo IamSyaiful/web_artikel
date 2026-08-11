@@ -56,7 +56,7 @@ class CommentController extends Controller
         ]);
 
         return redirect()
-            ->route('movies.show', $comment->movie_id)
+            ->route('movies.show', $comment->movie)
             ->with('success', 'Comment updated successfully.');
     }
 }

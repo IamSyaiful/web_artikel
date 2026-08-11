@@ -102,6 +102,7 @@ class MovieController extends Controller
         }
 
         $movie = Movie::create([
+            'user_id' => $request->user()->id,
             'title' => $validated['title'],
             'slug' => $slug,
             'poster' => $posterPath,

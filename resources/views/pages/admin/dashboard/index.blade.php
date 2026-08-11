@@ -17,6 +17,16 @@
 
 <div class="grid gap-6 xl:grid-cols-2">
 
+    <div class="rounded-xl border border-amber-200 bg-amber-50 p-6 shadow-sm xl:col-span-2">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm font-medium text-amber-800">Pending movie submissions</p>
+                <p class="mt-1 text-3xl font-bold text-amber-950">{{ $pendingSubmissionCount }}</p>
+            </div>
+            <a href="{{ route('admin.movie-submissions.index') }}" class="rounded-lg bg-amber-950 px-4 py-2.5 text-sm font-medium text-white">Review submissions</a>
+        </div>
+    </div>
+
     {{-- Recent Movies --}}
     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
 

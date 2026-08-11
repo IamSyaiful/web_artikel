@@ -61,13 +61,24 @@
 
             <div class="space-y-8 p-6 sm:p-8">
 
-                {{-- Title --}}
-                <x-admin.input
-                    name="title"
-                    label="Movie Title"
-                    placeholder="Enter movie title"
-                    required
-                />
+                {{-- Title / Slug --}}
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <x-admin.input
+                        name="title"
+                        label="Movie Title"
+                        placeholder="Enter movie title"
+                        required
+                    />
+
+                    <x-admin.input
+                        name="slug"
+                        label="Slug"
+                        placeholder="movie-slug"
+                        :value="\Illuminate\Support\Str::slug(old('title', ''))"
+                        disabled
+                        data-movie-slug
+                    />
+                </div>
 
 
                 {{-- Poster / Release Date / Duration --}}
@@ -227,8 +238,23 @@
             if (field) field.value = value ?? '';
         };
 
+        const syncSlug = () => {
+            const title = document.getElementById('title');
+            const slug = document.getElementById('slug');
+            if (!title || !slug) return;
+
+            slug.value = title.value
+                .toLowerCase()
+                .trim()
+                .replace(/[^\p{L}\p{N}]+/gu, '-')
+                .replace(/^-+|-+$/g, '');
+        };
+
+        document.getElementById('title')?.addEventListener('input', syncSlug);
+
         const fillMovieForm = (movie) => {
             setValue('title', movie.title);
+            syncSlug();
             setValue('release_date', movie.release_date);
             setValue('duration', movie.duration);
             setValue('director', movie.director);

@@ -46,6 +46,21 @@
                 <span>Movies</span>
             </a>
 
+            <a
+                href="{{ route('admin.movie-submissions.index') }}"
+                class="flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition
+                {{ request()->routeIs('admin.movie-submissions.*')
+                    ? 'bg-white/10 text-white'
+                    : 'text-gray-300 hover:bg-white/5 hover:text-white' }}">
+                <span class="flex items-center gap-3">
+                    <x-icon name="inbox" size="19" />
+                    <span>Movie Submissions</span>
+                </span>
+                @if (isset($pendingSubmissionCount) && $pendingSubmissionCount > 0)
+                    <span class="rounded-full bg-amber-400 px-2 py-0.5 text-[11px] font-bold text-gray-950">{{ $pendingSubmissionCount }}</span>
+                @endif
+            </a>
+
 
             {{-- Genres --}}
             <a

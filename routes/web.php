@@ -8,9 +8,11 @@ use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\User\MovieController as UserMovieController;
 use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\FavoriteController;
+use App\Http\Controllers\User\MovieSubmissionController as UserMovieSubmissionController;
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\MovieSubmissionController as AdminMovieSubmissionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Auth\PasswordController;
 
@@ -59,6 +61,22 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::delete('/movies/{movie}/favorite', [FavoriteController::class, 'destroy'])
         ->name('movies.unfavorite');
+
+    Route::get('/submissions', [UserMovieSubmissionController::class, 'index'])
+        ->name('submissions.index');
+    Route::get('/submissions/create', [UserMovieSubmissionController::class, 'create'])
+        ->name('submissions.create');
+    Route::post('/submissions', [UserMovieSubmissionController::class, 'store'])
+        ->name('submissions.store');
+    Route::get('/submissions/{submission}/edit', [UserMovieSubmissionController::class, 'edit'])
+        ->name('submissions.edit');
+    Route::put('/submissions/{submission}', [UserMovieSubmissionController::class, 'update'])
+        ->name('submissions.update');
+    Route::get('/submissions/tmdb/search', [UserMovieSubmissionController::class, 'tmdbSearch'])
+        ->name('submissions.tmdb.search');
+    Route::get('/submissions/tmdb/{tmdbMovie}', [UserMovieSubmissionController::class, 'tmdbDetails'])
+        ->whereNumber('tmdbMovie')
+        ->name('submissions.tmdb.details');
 });
 
 Route::middleware(['auth', 'role:admin'])
@@ -75,6 +93,15 @@ Route::middleware(['auth', 'role:admin'])
 
     Route::resource('movies', MovieController::class)
     ->except(['show']);
+
+    Route::get('movie-submissions', [AdminMovieSubmissionController::class, 'index'])
+        ->name('movie-submissions.index');
+    Route::get('movie-submissions/{submission}', [AdminMovieSubmissionController::class, 'show'])
+        ->name('movie-submissions.show');
+    Route::post('movie-submissions/{submission}/approve', [AdminMovieSubmissionController::class, 'approve'])
+        ->name('movie-submissions.approve');
+    Route::post('movie-submissions/{submission}/reject', [AdminMovieSubmissionController::class, 'reject'])
+        ->name('movie-submissions.reject');
 
     Route::get('movies/tmdb/search', [MovieController::class, 'tmdbSearch'])
         ->name('movies.tmdb.search');
