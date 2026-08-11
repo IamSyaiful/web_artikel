@@ -145,7 +145,7 @@
                 {{-- Register Form --}}
                 <form
                     method="POST"
-                    action="{{ route('register') }}"
+                     action="{{ route('register') }}"
                     class="mt-6 space-y-3.5"
                     x-data="{
                         loading: false,

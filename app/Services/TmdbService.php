@@ -41,8 +41,6 @@ class TmdbService
             ->take(8)
             ->map(fn (array $movie): array => [
                 'id' => $movie['id'],
-                // Keep the title in the movie's original language while the
-                // overview and other metadata follow the Indonesian response.
                 'title' => $movie['original_title'] ?? $movie['title'] ?? '',
                 'release_date' => $movie['release_date'] ?? null,
                 'overview' => $movie['overview'] ?? '',
@@ -68,8 +66,6 @@ class TmdbService
 
         return [
             'id' => $movie['id'],
-            // TMDB's original_title is independent from the requested
-            // response language and preserves the film's original title.
             'title' => $movie['original_title'] ?? $movie['title'] ?? '',
             'release_date' => $movie['release_date'] ?? null,
             'duration' => $movie['runtime'] ?? null,
