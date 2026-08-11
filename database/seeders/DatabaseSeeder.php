@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             MovieSeeder::class,
             CommentSeeder::class,
             FavoriteSeeder::class,
+            PageSeeder::class,
         ]);
     }
 }

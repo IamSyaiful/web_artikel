@@ -74,6 +74,19 @@
                 <span>Users</span>
             </a>
 
+            {{-- Pages --}}
+            <a
+                href="{{ route('admin.pages.index') }}"
+                class="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition
+                {{ request()->routeIs('admin.pages.*')
+                    ? 'bg-white/10 text-white'
+                    : 'text-gray-300 hover:bg-white/5 hover:text-white' }}">
+
+                <x-icon name="file-text" size="19" />
+
+                <span>Pages</span>
+            </a>
+
         </div>
 
 

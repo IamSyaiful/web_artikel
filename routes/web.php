@@ -10,6 +10,7 @@ use App\Http\Controllers\User\CommentController;
 use App\Http\Controllers\User\FavoriteController;
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PageController;
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
@@ -65,6 +66,9 @@ Route::middleware(['auth', 'role:admin'])
         ->name('movies.tmdb.details');
 
     Route::resource('genres', GenreController::class)
+    ->except(['show']);
+
+    Route::resource('pages', PageController::class)
     ->except(['show']);
 });
 

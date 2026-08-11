@@ -46,12 +46,12 @@
 
             {{-- Movie Content --}}
 
-            <div class="mt-8 grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[320px_minmax(0,1fr)]">
+            <div class="mt-8 flow-root">
 
 
                 {{-- Poster --}}
 
-                <div class="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none">
+                <div class="mx-auto w-full max-w-[320px] lg:float-left lg:mr-12 lg:max-w-[300px] xl:max-w-[320px]">
 
                     <div class="group relative overflow-hidden rounded-2xl border border-gray-200 bg-gray-100">
 
@@ -122,7 +122,7 @@
 
                 {{-- Movie Information --}}
 
-                <div class="min-w-0 flex flex-col justify-center">
+                <div class="min-w-0">
 
                     {{-- Title --}}
                     <h1 class="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl lg:text-5xl">
@@ -244,7 +244,7 @@
 
                     @if ($movie->synopsis)
 
-                        <div class="mt-7 max-w-3xl">
+                        <div class="mt-7">
 
                             <h2 class="text-sm font-semibold text-gray-950">
                                 Synopsis
@@ -260,7 +260,7 @@
 
 
                     {{-- Favorite --}}
-                    <div class="mt-8">
+                    <div class="mt-8 clear-both">
 
                         @auth
 

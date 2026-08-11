@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
+use App\Models\Page;
 
 class MovieController extends Controller
 {
@@ -88,10 +89,16 @@ class MovieController extends Controller
             ->orderBy('name')
             ->get();
 
+        $moviesContent = Page::where('slug', 'movies')
+            ->with('contents')
+            ->first()?->contents
+            ->pluck('value', 'key') ?? collect();
+
 
         return view('pages.user.movies.index', [
             'movies' => $movies,
             'genres' => $genres,
+            'moviesContent' => $moviesContent,
         ]);
     }
 

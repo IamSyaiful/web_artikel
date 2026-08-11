@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
+use App\Models\Page;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,11 @@ class HomeController extends Controller
         ->take(6)
         ->get();
 
-        return view('pages.user.home.index', compact('movies', 'genres'));
+        $homeContent = Page::where('slug', 'home')
+            ->with('contents')
+            ->first()?->contents
+            ->pluck('value', 'key') ?? collect();
+
+        return view('pages.user.home.index', compact('movies', 'genres', 'homeContent'));
     }
 }

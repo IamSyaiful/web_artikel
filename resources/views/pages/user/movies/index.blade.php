@@ -1,8 +1,8 @@
 @extends('layouts.user.app')
 
-@section('title', 'Movies - Ruang Cinema')
+@section('title', $moviesContent->get('meta_title'))
 
-@section('description', 'Temukan berbagai film favoritmu di Ruang Cinema.')
+@section('description', $moviesContent->get('meta_description'))
 
 @section('content')
 
@@ -23,16 +23,15 @@
             <div>
 
                 <span class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-200">
-                    Ruang Cinema
+                    {{ $moviesContent->get('hero_label') }}
                 </span>
 
                 <h1 class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                    Movies
+                    {{ $moviesContent->get('hero_title') }}
                 </h1>
 
                 <p class="mt-4 max-w-xl text-base leading-7 text-gray-100 sm:text-lg">
-                    Temukan film favoritmu. Review, rating, dan simpan film
-                    yang ingin kamu tonton.
+                    {{ $moviesContent->get('hero_description') }}
                 </p>
 
             </div>

@@ -1,8 +1,8 @@
 @extends('layouts.user.app')
 
-@section('title', 'Ruang Cinema')
+@section('title', $homeContent->get('meta_title'))
 
-@section('description', 'Temukan film, baca review, berikan komentar, dan simpan film favoritmu.')
+@section('description', $homeContent->get('meta_description'))
 
 @section('content')
 
@@ -27,23 +27,21 @@
                         <span class="h-2 w-2 rounded-full bg-gray-900"></span>
 
                         <span class="text-sm font-medium text-gray-600">
-                            Your Personal Cinema Space
+                            {{ $homeContent->get('hero_label') }}
                         </span>
                     </div>
 
                     {{-- Heading --}}
                     <h1 class="text-5xl font-bold leading-[1.05] tracking-tight text-gray-950 sm:text-6xl lg:text-7xl">
-                        Discover Your
+                        {{ $homeContent->get('hero_title') }}
                         <span class="block text-gray-400">
-                            Next Favorite Movie.
+                            {{ $homeContent->get('hero_title_accent') }}
                         </span>
                     </h1>
 
                     {{-- Description --}}
                     <p class="mt-7 max-w-xl text-base leading-7 text-gray-600 sm:text-lg">
-                        Temukan film yang ingin kamu tonton, baca review,
-                        bagikan pendapatmu, dan simpan film favoritmu
-                        dalam satu ruang.
+                        {{ $homeContent->get('hero_description') }}
                     </p>
 
                     {{-- CTA --}}
@@ -53,7 +51,7 @@
                             href="{{ route('movies.index') }}"
                             class="inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-6 py-3.5 text-sm font-semibold text-white transition duration-200 hover:bg-gray-800"
                         >
-                            Explore Movies
+                            {{ $homeContent->get('hero_primary_cta') }}
 
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +73,7 @@
                             href="#about"
                             class="inline-flex items-center justify-center rounded-full border border-gray-300 px-6 py-3.5 text-sm font-semibold text-gray-700 transition duration-200 hover:border-gray-400 hover:bg-gray-50"
                         >
-                            Learn More
+                            {{ $homeContent->get('hero_secondary_cta') }}
                         </a>
 
                     </div>
@@ -312,20 +310,18 @@
             <div class="mx-auto max-w-2xl text-center">
 
                 <span class="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">
-                    Everything You Need
+                    {{ $homeContent->get('feature_label') }}
                 </span>
 
                 <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-                    Your Movie Experience,
+                    {{ $homeContent->get('feature_title') }}
                     <span class="text-gray-400">
-                        All in One Place.
+                        {{ $homeContent->get('feature_title_accent') }}
                     </span>
                 </h2>
 
                 <p class="mt-5 text-base leading-7 text-gray-600">
-                    Ruang Cinema membantu kamu menemukan film,
-                    membaca pendapat komunitas, dan menyimpan
-                    film yang ingin kamu tonton kembali.
+                    {{ $homeContent->get('feature_description') }}
                 </p>
 
             </div>
@@ -545,18 +541,18 @@
                 <div>
 
                     <span class="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">
-                        Trending Movies
+                        {{ $homeContent->get('trending_label') }}
                     </span>
 
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-                        Stories Worth
+                        {{ $homeContent->get('trending_title') }}
                         <span class="text-gray-400">
-                            Watching.
+                            {{ $homeContent->get('trending_title_accent') }}
                         </span>
                     </h2>
 
                     <p class="mt-3 text-sm leading-6 text-gray-600 sm:text-base">
-                        Film yang sedang populer minggu ini.
+                        {{ $homeContent->get('trending_description') }}
                     </p>
 
                 </div>
@@ -567,7 +563,7 @@
                     href="{{ route('movies.index') }}"
                     class="hidden shrink-0 items-center gap-2 rounded-md border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-800 transition hover:border-gray-400 hover:bg-gray-50 sm:inline-flex"
                 >
-                    View All Movies
+                    {{ $homeContent->get('trending_cta') }}
 
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -913,11 +909,11 @@
                 <div class="lg:border-r lg:border-gray-200 lg:pr-12">
 
                     <span class="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">
-                        Why Ruang Cinema
+                        {{ $homeContent->get('about_label') }}
                     </span>
 
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-                        Mengapa Ruang Cinema?
+                        {{ $homeContent->get('about_title') }}
                     </h2>
 
 
@@ -1039,11 +1035,11 @@
                 <div>
 
                     <span class="text-sm font-semibold uppercase tracking-[0.2em] text-gray-500">
-                        Community Voices
+                        {{ $homeContent->get('community_label') }}
                     </span>
 
                     <h2 class="mt-3 text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
-                        Apa Kata Mereka?
+                        {{ $homeContent->get('community_title') }}
                     </h2>
 
 
