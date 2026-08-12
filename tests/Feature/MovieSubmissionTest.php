@@ -100,6 +100,36 @@ class MovieSubmissionTest extends TestCase
         $this->assertDatabaseHas('movie_genre', ['genre_id' => $genre->id]);
     }
 
+    public function test_user_can_delete_their_own_approved_movie_from_submissions(): void
+    {
+        $user = User::factory()->create();
+        $genre = Genre::create(['name' => 'Drama', 'slug' => 'drama']);
+        $movie = Movie::create([
+            'user_id' => $user->id,
+            'title' => 'Published Film',
+            'slug' => 'published-film',
+            'rating' => 4.5,
+        ]);
+        $submission = MovieSubmission::create([
+            'user_id' => $user->id,
+            'title' => 'Published Film',
+            'slug' => 'published-film',
+            'status' => MovieSubmission::STATUS_APPROVED,
+            'approved_movie_id' => $movie->id,
+        ]);
+        $submission->genres()->attach($genre);
+        $movie->genres()->attach($genre);
+
+        $this->actingAs($user)
+            ->delete(route('movies.destroy', $movie))
+            ->assertRedirect(route('submissions.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('movies', [
+            'id' => $movie->id,
+        ]);
+    }
+
     public function test_slug_conflict_keeps_submission_pending(): void
     {
         $user = User::factory()->create();

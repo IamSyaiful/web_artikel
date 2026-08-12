@@ -62,6 +62,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::delete('/movies/{movie}/favorite', [FavoriteController::class, 'destroy'])
         ->name('movies.unfavorite');
 
+    Route::delete('/movies/{movie}', [UserMovieController::class, 'destroy'])
+        ->name('movies.destroy');
+
     Route::get('/submissions', [UserMovieSubmissionController::class, 'index'])
         ->name('submissions.index');
     Route::get('/submissions/create', [UserMovieSubmissionController::class, 'create'])
@@ -88,11 +91,31 @@ Route::middleware(['auth', 'role:admin'])
     Route::get('/', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    Route::resource('users', UserController::class)
-    ->except(['show']);
+    Route::get('users', [UserController::class, 'index'])
+        ->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])
+        ->name('users.create');
+    Route::post('users', [UserController::class, 'store'])
+        ->name('users.store');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])
+        ->name('users.edit');
+    Route::put('users/{user}', [UserController::class, 'update'])
+        ->name('users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])
+        ->name('users.destroy');
 
-    Route::resource('movies', MovieController::class)
-    ->except(['show']);
+    Route::get('movies', [MovieController::class, 'index'])
+        ->name('movies.index');
+    Route::get('movies/create', [MovieController::class, 'create'])
+        ->name('movies.create');
+    Route::post('movies', [MovieController::class, 'store'])
+        ->name('movies.store');
+    Route::get('movies/{movie}/edit', [MovieController::class, 'edit'])
+        ->name('movies.edit');
+    Route::put('movies/{movie}', [MovieController::class, 'update'])
+        ->name('movies.update');
+    Route::delete('movies/{movie}', [MovieController::class, 'destroy'])
+        ->name('movies.destroy');
 
     Route::get('movie-submissions', [AdminMovieSubmissionController::class, 'index'])
         ->name('movie-submissions.index');
@@ -109,11 +132,31 @@ Route::middleware(['auth', 'role:admin'])
         ->whereNumber('tmdbMovie')
         ->name('movies.tmdb.details');
 
-    Route::resource('genres', GenreController::class)
-    ->except(['show']);
+    Route::get('genres', [GenreController::class, 'index'])
+        ->name('genres.index');
+    Route::get('genres/create', [GenreController::class, 'create'])
+        ->name('genres.create');
+    Route::post('genres', [GenreController::class, 'store'])
+        ->name('genres.store');
+    Route::get('genres/{genre}/edit', [GenreController::class, 'edit'])
+        ->name('genres.edit');
+    Route::put('genres/{genre}', [GenreController::class, 'update'])
+        ->name('genres.update');
+    Route::delete('genres/{genre}', [GenreController::class, 'destroy'])
+        ->name('genres.destroy');
 
-    Route::resource('pages', PageController::class)
-    ->except(['show']);
+    Route::get('pages', [PageController::class, 'index'])
+        ->name('pages.index');
+    Route::get('pages/create', [PageController::class, 'create'])
+        ->name('pages.create');
+    Route::post('pages', [PageController::class, 'store'])
+        ->name('pages.store');
+    Route::get('pages/{page}/edit', [PageController::class, 'edit'])
+        ->name('pages.edit');
+    Route::put('pages/{page}', [PageController::class, 'update'])
+        ->name('pages.update');
+    Route::delete('pages/{page}', [PageController::class, 'destroy'])
+        ->name('pages.destroy');
 });
 
 Route::middleware('auth')->group(function () {

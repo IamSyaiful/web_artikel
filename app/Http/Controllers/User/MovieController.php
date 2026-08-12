@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
 use App\Models\Page;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\RedirectResponse;
 
 class MovieController extends Controller
 {
@@ -159,5 +161,21 @@ class MovieController extends Controller
             'isFavorite' => $isFavorite,
         ]);
 
+    }
+
+    public function destroy(Request $request, Movie $movie): RedirectResponse
+    {
+        if ($movie->user_id !== $request->user()->id) {
+            abort(403, 'You can only delete your own approved movie.');
+        }
+
+        if ($movie->poster) {
+            Storage::disk('public')->delete($movie->poster);
+        }
+
+        $movie->delete();
+
+        return redirect()->route('submissions.index')
+            ->with('success', 'Movie yang sudah disetujui berhasil dihapus.');
     }
 }
