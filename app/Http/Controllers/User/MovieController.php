@@ -169,6 +169,14 @@ class MovieController extends Controller
             abort(403, 'You can only delete your own approved movie.');
         }
 
+        $submission = \App\Models\MovieSubmission::query()
+            ->where('approved_movie_id', $movie->id)
+            ->first();
+
+        if ($submission) {
+            $submission->delete();
+        }
+
         if ($movie->poster) {
             Storage::disk('public')->delete($movie->poster);
         }

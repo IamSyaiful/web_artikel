@@ -128,6 +128,9 @@ class MovieSubmissionTest extends TestCase
         $this->assertDatabaseMissing('movies', [
             'id' => $movie->id,
         ]);
+        $this->assertDatabaseMissing('movie_submissions', [
+            'id' => $submission->id,
+        ]);
     }
 
     public function test_slug_conflict_keeps_submission_pending(): void

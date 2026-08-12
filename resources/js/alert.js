@@ -135,6 +135,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
+    document.querySelectorAll('[data-delete-form]').forEach((form) => {
+
+        form.addEventListener('submit', async (event) => {
+
+            event.preventDefault();
+
+            const result = await showConfirmAlert(
+                'Delete published article?',
+                'This article will be permanently removed from your published list.'
+            );
+
+            if (result.isConfirmed) {
+                form.submit();
+            }
+
+        });
+
+    });
+
 });
 
 window.showSuccessAlert = showSuccessAlert;
