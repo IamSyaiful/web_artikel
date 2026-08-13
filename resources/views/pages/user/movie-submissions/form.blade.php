@@ -1,4 +1,4 @@
-@php($isEdit = $submission->exists)
+@php($isEdit = $movie->exists)
 
 @if ($errors->any())
     <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -10,18 +10,18 @@
     </div>
 @endif
 
-<form method="POST" action="{{ $isEdit ? route('submissions.update', $submission) : route('submissions.store') }}" enctype="multipart/form-data" class="space-y-6">
+<form method="POST" action="{{ $isEdit ? route('submissions.update', $movie) : route('submissions.store') }}" enctype="multipart/form-data" class="space-y-6">
     @csrf
     @if ($isEdit) @method('PUT') @endif
 
     <div class="grid gap-6 md:grid-cols-2">
         <div>
             <label for="title" class="mb-2 block text-sm font-medium text-gray-700">Title</label>
-            <input id="title" name="title" required value="{{ old('title', $submission->title) }}" class="w-full rounded-lg border-gray-300" placeholder="Movie title">
+            <input id="title" name="title" required value="{{ old('title', $movie->title) }}" class="w-full rounded-lg border-gray-300" placeholder="Movie title">
         </div>
         <div>
             <label for="slug" class="mb-2 block text-sm font-medium text-gray-700">Slug</label>
-            <input id="slug" disabled value="{{ old('title', $submission->title) ? \Illuminate\Support\Str::slug(old('title', $submission->title)) : '' }}" class="w-full rounded-lg border-gray-300 bg-gray-100 text-gray-500">
+            <input id="slug" disabled value="{{ old('title', $movie->title) ? \Illuminate\Support\Str::slug(old('title', $movie->title)) : '' }}" class="w-full rounded-lg border-gray-300 bg-gray-100 text-gray-500">
         </div>
     </div>
 
@@ -38,9 +38,9 @@
         <div>
             <label for="poster" class="mb-2 block text-sm font-medium text-gray-700">Poster</label>
             <input id="poster" name="poster" type="file" accept="image/*" class="w-full rounded-lg border border-gray-300 bg-white p-2 text-sm">
-            <div id="poster-preview" class="{{ $submission->poster ? 'flex' : 'hidden' }} mt-3 items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div id="poster-preview" class="{{ $movie->poster ? 'flex' : 'hidden' }} mt-3 items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
                 <img
-                    src="{{ $submission->poster ? asset('storage/' . $submission->poster) : '' }}"
+                    src="{{ $movie->poster ? asset('storage/' . $movie->poster) : '' }}"
                     alt="Poster preview"
                     class="h-24 w-16 rounded object-cover"
                     data-poster-preview-image
@@ -48,24 +48,24 @@
                 <div class="min-w-0">
                     <p class="text-xs font-semibold text-gray-700">Poster preview</p>
                     <p class="mt-1 truncate text-xs text-gray-500" data-poster-preview-name>
-                        {{ $submission->poster ? 'Current poster' : '' }}
+                        {{ $movie->poster ? 'Current poster' : '' }}
                     </p>
                 </div>
             </div>
         </div>
-        <div><label for="release_date" class="mb-2 block text-sm font-medium text-gray-700">Release date</label><input id="release_date" name="release_date" type="date" value="{{ old('release_date', $submission->release_date?->format('Y-m-d')) }}" class="w-full rounded-lg border-gray-300"></div>
-        <div><label for="duration" class="mb-2 block text-sm font-medium text-gray-700">Duration (minutes)</label><input id="duration" name="duration" type="number" min="1" value="{{ old('duration', $submission->duration) }}" class="w-full rounded-lg border-gray-300"></div>
+        <div><label for="release_date" class="mb-2 block text-sm font-medium text-gray-700">Release date</label><input id="release_date" name="release_date" type="date" value="{{ old('release_date', $movie->release_date?->format('Y-m-d')) }}" class="w-full rounded-lg border-gray-300"></div>
+        <div><label for="duration" class="mb-2 block text-sm font-medium text-gray-700">Duration (minutes)</label><input id="duration" name="duration" type="number" min="1" value="{{ old('duration', $movie->duration) }}" class="w-full rounded-lg border-gray-300"></div>
     </div>
 
     <div class="grid gap-6 md:grid-cols-2">
-        <div><label for="director" class="mb-2 block text-sm font-medium text-gray-700">Director</label><input id="director" name="director" value="{{ old('director', $submission->director) }}" class="w-full rounded-lg border-gray-300"></div>
-        <div><label for="rating" class="mb-2 block text-sm font-medium text-gray-700">Rating</label><input id="rating" name="rating" type="number" min="0" max="5" step="0.1" value="{{ old('rating', $submission->rating ?? 0) }}" class="w-full rounded-lg border-gray-300"></div>
+        <div><label for="director" class="mb-2 block text-sm font-medium text-gray-700">Director</label><input id="director" name="director" value="{{ old('director', $movie->director) }}" class="w-full rounded-lg border-gray-300"></div>
+        <div><label for="rating" class="mb-2 block text-sm font-medium text-gray-700">Rating</label><input id="rating" name="rating" type="number" min="0" max="5" step="0.1" value="{{ old('rating', $movie->rating ?? 0) }}" class="w-full rounded-lg border-gray-300"></div>
     </div>
 
     <div>
         <label class="mb-2 block text-sm font-medium text-gray-700">Genres</label>
         <div class="grid grid-cols-2 gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 sm:grid-cols-3">
-            @php($selectedGenres = old('genres', $submission->exists ? $submission->genres->pluck('id')->all() : []))
+            @php($selectedGenres = old('genres', $movie->exists ? $movie->genres->pluck('id')->all() : []))
             @php($tmdbGenreIds = [
                 'Action' => 28,
                 'Adventure' => 12,
@@ -95,8 +95,8 @@
         @error('genres')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 
-    <div><label for="synopsis" class="mb-2 block text-sm font-medium text-gray-700">Synopsis</label><textarea id="synopsis" name="synopsis" rows="5" class="w-full rounded-lg border-gray-300">{{ old('synopsis', $submission->synopsis) }}</textarea></div>
-    <div><label for="review" class="mb-2 block text-sm font-medium text-gray-700">Review</label><textarea id="review" name="review" rows="8" class="w-full rounded-lg border-gray-300">{{ old('review', $submission->review) }}</textarea></div>
+    <div><label for="synopsis" class="mb-2 block text-sm font-medium text-gray-700">Synopsis</label><textarea id="synopsis" name="synopsis" rows="5" class="w-full rounded-lg border-gray-300">{{ old('synopsis', $movie->synopsis) }}</textarea></div>
+    <div><label for="review" class="mb-2 block text-sm font-medium text-gray-700">Review</label><textarea id="review" name="review" rows="8" class="w-full rounded-lg border-gray-300">{{ old('review', $movie->review) }}</textarea></div>
 
     <div class="flex justify-end gap-3 border-t border-gray-200 pt-5">
         <a href="{{ route('submissions.index') }}" class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">Cancel</a>

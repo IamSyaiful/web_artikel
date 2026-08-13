@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Genre;
-use App\Models\MovieSubmission;
+use App\Models\Movie;
 use App\Services\TmdbService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
@@ -17,19 +17,19 @@ class MovieSubmissionController extends Controller
 {
     public function index(Request $request): View
     {
-        $submissions = $request->user()->movieSubmissions()
+        $movies = $request->user()->movies()
             ->with('genres')
             ->latest()
             ->paginate(10);
 
-        return view('pages.user.movie-submissions.index', compact('submissions'));
+        return view('pages.user.movie-submissions.index', compact('movies'));
     }
 
     public function create(): View
     {
         return view('pages.user.movie-submissions.create', [
             'genres' => Genre::orderBy('name')->get(),
-            'submission' => new MovieSubmission,
+            'movie' => new Movie,
         ]);
     }
 
@@ -38,33 +38,34 @@ class MovieSubmissionController extends Controller
         $validated = $this->validated($request);
         $poster = $this->storePoster($request, $tmdb);
 
-        $submission = $request->user()->movieSubmissions()->create([
+        $movie = $request->user()->movies()->create([
             ...$this->movieAttributes($validated),
             'slug' => Str::slug($validated['title']),
             'poster' => $poster,
-            'status' => MovieSubmission::STATUS_PENDING,
+            'status' => Movie::STATUS_PENDING,
+            'note' => null,
         ]);
 
-        $submission->genres()->sync($validated['genres']);
+        $movie->genres()->sync($validated['genres']);
 
         return redirect()->route('submissions.index')->with('success', 'Pengajuan artikel movie berhasil dikirim.');
     }
 
-    public function edit(Request $request, MovieSubmission $submission): View
+    public function edit(Request $request, Movie $movie): View
     {
-        $this->ensureRejectedOwner($request, $submission);
+        $this->ensureRejectedOwner($request, $movie);
 
         return view('pages.user.movie-submissions.edit', [
             'genres' => Genre::orderBy('name')->get(),
-            'submission' => $submission->load('genres'),
+            'movie' => $movie->load('genres'),
         ]);
     }
 
-    public function update(Request $request, MovieSubmission $submission, TmdbService $tmdb): RedirectResponse
+    public function update(Request $request, Movie $movie, TmdbService $tmdb): RedirectResponse
     {
-        $this->ensureRejectedOwner($request, $submission);
+        $this->ensureRejectedOwner($request, $movie);
         $validated = $this->validated($request);
-        $poster = $submission->poster;
+        $poster = $movie->poster;
 
         if ($request->hasFile('poster') || $request->filled('tmdb_poster_path')) {
             if ($poster) {
@@ -74,17 +75,14 @@ class MovieSubmissionController extends Controller
             $poster = $this->storePoster($request, $tmdb);
         }
 
-        $submission->update([
+        $movie->update([
             ...$this->movieAttributes($validated),
             'slug' => Str::slug($validated['title']),
             'poster' => $poster,
-            'status' => MovieSubmission::STATUS_PENDING,
-            'rejection_reason' => null,
-            'reviewed_by' => null,
-            'reviewed_at' => null,
-            'approved_movie_id' => null,
+            'status' => Movie::STATUS_PENDING,
+            'note' => null,
         ]);
-        $submission->genres()->sync($validated['genres']);
+        $movie->genres()->sync($validated['genres']);
 
         return redirect()->route('submissions.index')->with('success', 'Pengajuan diperbarui dan dikirim ulang untuk direview.');
     }
@@ -113,10 +111,10 @@ class MovieSubmissionController extends Controller
         }
     }
 
-    private function ensureRejectedOwner(Request $request, MovieSubmission $submission): void
+    private function ensureRejectedOwner(Request $request, Movie $movie): void
     {
         abort_unless(
-            $submission->user_id === $request->user()->id && $submission->status === MovieSubmission::STATUS_REJECTED,
+            $movie->user_id === $request->user()->id && $movie->status === Movie::STATUS_REJECTED,
             403,
         );
     }
@@ -153,12 +151,12 @@ class MovieSubmissionController extends Controller
     private function storePoster(Request $request, TmdbService $tmdb): ?string
     {
         if ($request->hasFile('poster')) {
-            return $request->file('poster')->store('movie-submissions/posters', 'public');
+            return $request->file('poster')->store('posters', 'public');
         }
 
         if ($request->filled('tmdb_poster_path')) {
             try {
-                return $tmdb->storePoster($request->string('tmdb_poster_path')->toString(), 'movie-submissions/posters');
+                return $tmdb->storePoster($request->string('tmdb_poster_path')->toString(), 'posters');
             } catch (RequestException|\RuntimeException $exception) {
                 report($exception);
             }

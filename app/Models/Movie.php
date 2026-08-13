@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Movie extends Model
 {
     use HasFactory;
+
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'user_id',
@@ -23,12 +28,19 @@ class Movie extends Model
         'rating',
         'synopsis',
         'review',
+        'status',
+        'note',
     ];
 
     protected $casts = [
         'release_date' => 'date',
         'rating' => 'decimal:1',
     ];
+
+    public function scopeApproved(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_APPROVED);
+    }
 
     /**
      * Use the unique slug for route model binding and generated movie URLs.

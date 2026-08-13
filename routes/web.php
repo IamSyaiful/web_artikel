@@ -71,9 +71,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         ->name('submissions.create');
     Route::post('/submissions', [UserMovieSubmissionController::class, 'store'])
         ->name('submissions.store');
-    Route::get('/submissions/{submission}/edit', [UserMovieSubmissionController::class, 'edit'])
+    Route::get('/submissions/{movie}/edit', [UserMovieSubmissionController::class, 'edit'])
         ->name('submissions.edit');
-    Route::put('/submissions/{submission}', [UserMovieSubmissionController::class, 'update'])
+    Route::put('/submissions/{movie}', [UserMovieSubmissionController::class, 'update'])
         ->name('submissions.update');
     Route::get('/submissions/tmdb/search', [UserMovieSubmissionController::class, 'tmdbSearch'])
         ->name('submissions.tmdb.search');

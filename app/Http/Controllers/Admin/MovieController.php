@@ -44,8 +44,8 @@ class MovieController extends Controller
      */
     public function index()
     {
-        $movies = Movie::with('genres')->latest()->get();
-        $movies = Movie::with('genres')
+        $movies = Movie::approved()
+            ->with('genres')
             ->latest()
             ->get();
 
@@ -112,6 +112,8 @@ class MovieController extends Controller
             'rating' => $validated['rating'] ?? 0,
             'synopsis' => $validated['synopsis'] ?? null,
             'review' => $validated['review'] ?? null,
+            'status' => Movie::STATUS_APPROVED,
+            'note' => null,
         ]);
 
         $movie->genres()->sync($validated['genres']);

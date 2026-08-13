@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Genre;
 use App\Models\Movie;
-use App\Models\MovieSubmission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -25,11 +24,11 @@ class MovieSubmissionTest extends TestCase
         ]);
 
         $response->assertRedirect(route('submissions.index'));
-        $this->assertDatabaseHas('movie_submissions', [
+        $this->assertDatabaseHas('movies', [
             'user_id' => $user->id,
             'title' => 'A New Film',
             'slug' => 'a-new-film',
-            'status' => MovieSubmission::STATUS_PENDING,
+            'status' => Movie::STATUS_PENDING,
         ]);
     }
 
@@ -38,32 +37,32 @@ class MovieSubmissionTest extends TestCase
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
         $genre = Genre::create(['name' => 'Drama', 'slug' => 'drama']);
-        $submission = MovieSubmission::create([
+        $movie = Movie::create([
             'user_id' => $user->id,
             'title' => 'Rejected Film',
             'slug' => 'rejected-film',
-            'status' => MovieSubmission::STATUS_REJECTED,
-            'rejection_reason' => 'Please add more detail.',
+            'status' => Movie::STATUS_REJECTED,
+            'note' => 'Please add more detail.',
         ]);
-        $submission->genres()->attach($genre);
+        $movie->genres()->attach($genre);
 
         $this->actingAs($otherUser)
-            ->get(route('submissions.edit', $submission))
+            ->get(route('submissions.edit', $movie))
             ->assertForbidden();
 
         $this->actingAs($user)
-            ->put(route('submissions.update', $submission), [
+            ->put(route('submissions.update', $movie), [
                 'title' => 'Improved Film',
                 'genres' => [$genre->id],
                 'rating' => 4.5,
             ])
             ->assertRedirect(route('submissions.index'));
 
-        $this->assertDatabaseHas('movie_submissions', [
-            'id' => $submission->id,
+        $this->assertDatabaseHas('movies', [
+            'id' => $movie->id,
             'title' => 'Improved Film',
-            'status' => MovieSubmission::STATUS_PENDING,
-            'rejection_reason' => null,
+            'status' => Movie::STATUS_PENDING,
+            'note' => null,
         ]);
     }
 
@@ -72,32 +71,28 @@ class MovieSubmissionTest extends TestCase
         $user = User::factory()->create();
         $admin = User::factory()->create(['role' => 'admin']);
         $genre = Genre::create(['name' => 'Drama', 'slug' => 'drama']);
-        $submission = MovieSubmission::create([
+        $movie = Movie::create([
             'user_id' => $user->id,
-            'title' => 'Approved Film',
-            'slug' => 'approved-film',
-            'status' => MovieSubmission::STATUS_PENDING,
+            'title' => 'Pending Film',
+            'slug' => 'pending-film',
+            'status' => Movie::STATUS_PENDING,
         ]);
-        $submission->genres()->attach($genre);
+        $movie->genres()->attach($genre);
 
         $this->actingAs($admin)
-            ->post(route('admin.movie-submissions.reject', $submission), [])
+            ->post(route('admin.movie-submissions.reject', $movie), [])
             ->assertSessionHasErrors('rejection_reason');
 
         $this->actingAs($admin)
-            ->post(route('admin.movie-submissions.approve', $submission))
+            ->post(route('admin.movie-submissions.approve', $movie))
             ->assertRedirect(route('admin.movie-submissions.index'));
 
         $this->assertDatabaseHas('movies', [
-            'title' => 'Approved Film',
+            'id' => $movie->id,
+            'title' => 'Pending Film',
             'user_id' => $user->id,
-            'slug' => 'approved-film',
+            'status' => Movie::STATUS_APPROVED,
         ]);
-        $this->assertDatabaseHas('movie_submissions', [
-            'id' => $submission->id,
-            'status' => MovieSubmission::STATUS_APPROVED,
-        ]);
-        $this->assertDatabaseHas('movie_genre', ['genre_id' => $genre->id]);
     }
 
     public function test_user_can_delete_their_own_approved_movie_from_submissions(): void
@@ -109,15 +104,8 @@ class MovieSubmissionTest extends TestCase
             'title' => 'Published Film',
             'slug' => 'published-film',
             'rating' => 4.5,
+            'status' => Movie::STATUS_APPROVED,
         ]);
-        $submission = MovieSubmission::create([
-            'user_id' => $user->id,
-            'title' => 'Published Film',
-            'slug' => 'published-film',
-            'status' => MovieSubmission::STATUS_APPROVED,
-            'approved_movie_id' => $movie->id,
-        ]);
-        $submission->genres()->attach($genre);
         $movie->genres()->attach($genre);
 
         $this->actingAs($user)
@@ -127,31 +115,6 @@ class MovieSubmissionTest extends TestCase
 
         $this->assertDatabaseMissing('movies', [
             'id' => $movie->id,
-        ]);
-        $this->assertDatabaseMissing('movie_submissions', [
-            'id' => $submission->id,
-        ]);
-    }
-
-    public function test_slug_conflict_keeps_submission_pending(): void
-    {
-        $user = User::factory()->create();
-        Movie::create(['title' => 'Existing Film', 'slug' => 'conflicting-film']);
-        $submission = MovieSubmission::create([
-            'user_id' => $user->id,
-            'title' => 'Conflicting Film',
-            'slug' => 'conflicting-film',
-            'status' => MovieSubmission::STATUS_PENDING,
-        ]);
-
-        $this->actingAs(User::factory()->create(['role' => 'admin']))
-            ->post(route('admin.movie-submissions.approve', $submission))
-            ->assertRedirect()
-            ->assertSessionHas('error');
-
-        $this->assertDatabaseHas('movie_submissions', [
-            'id' => $submission->id,
-            'status' => MovieSubmission::STATUS_PENDING,
         ]);
     }
 }

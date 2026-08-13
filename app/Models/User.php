@@ -63,9 +63,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Movie::class);
     }
-
-    public function movieSubmissions(): HasMany
-    {
-        return $this->hasMany(MovieSubmission::class);
-    }
 }

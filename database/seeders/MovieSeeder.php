@@ -50,6 +50,7 @@ class MovieSeeder extends Seeder
                 ...$movieData,
                 'slug' => Str::slug($movieData['title']),
                 'user_id' => $authorId,
+                'status' => Movie::STATUS_APPROVED,
             ]);
 
             $genreIds = Genre::whereIn('name', $genres)

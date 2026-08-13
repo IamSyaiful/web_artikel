@@ -12,7 +12,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $movies = Movie::with('genres')
+        $movies = Movie::approved()
+            ->with('genres')
             ->orderByDesc('release_date')
             ->orderByDesc('rating')
             ->take(10)

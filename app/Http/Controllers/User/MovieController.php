@@ -14,7 +14,7 @@ class MovieController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Movie::with('genres');
+        $query = Movie::approved()->with('genres');
 
         // Fungsi Search
 
@@ -106,6 +106,10 @@ class MovieController extends Controller
 
     public function show(Movie $movie)
     {
+        if ($movie->status !== Movie::STATUS_APPROVED) {
+            abort(404);
+        }
+
         $movie->load([
             'author',
             'genres',
@@ -118,7 +122,8 @@ class MovieController extends Controller
 
         $genreIds = $movie->genres->pluck('id');
 
-        $relatedMovies = Movie::with('genres')
+        $relatedMovies = Movie::approved()
+            ->with('genres')
             ->where('id', '!=', $movie->id)
             ->when(
                 $genreIds->isNotEmpty(),
@@ -136,7 +141,8 @@ class MovieController extends Controller
         // tambahkan film terbaru lainnya
         if ($relatedMovies->count() < 5) {
 
-            $additionalMovies = Movie::with('genres')
+            $additionalMovies = Movie::approved()
+                ->with('genres')
                 ->where('id', '!=', $movie->id)
                 ->whereNotIn('id', $relatedMovies->pluck('id'))
                 ->latest()
@@ -167,14 +173,6 @@ class MovieController extends Controller
     {
         if ($movie->user_id !== $request->user()->id) {
             abort(403, 'You can only delete your own approved movie.');
-        }
-
-        $submission = \App\Models\MovieSubmission::query()
-            ->where('approved_movie_id', $movie->id)
-            ->first();
-
-        if ($submission) {
-            $submission->delete();
         }
 
         if ($movie->poster) {
