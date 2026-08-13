@@ -832,7 +832,8 @@
 
                             {{-- Bottom Action --}}
                             <a
-                                href="{{ route('movies.index') }}"
+                                href="{{ route('movies.index', ['genre' => $genre->slug]) }}"
+                                aria-label="Explore {{ $genre->name }}"
                                 class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gray-950"
                             >
                                 Explore Genre

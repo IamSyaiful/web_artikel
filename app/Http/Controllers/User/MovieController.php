@@ -24,15 +24,15 @@ class MovieController extends Controller
             $query->where('title', 'like', '%' . $search . '%');
         }
 
-        // Filter Genre
+        // Filter Genre (by slug)
 
         if ($request->filled('genre')) {
 
-            $genreId = $request->genre;
+            $slug = $request->genre;
 
-            $query->whereHas('genres', function ($genreQuery) use ($genreId) {
+            $query->whereHas('genres', function ($genreQuery) use ($slug) {
 
-                $genreQuery->where('genres.id', $genreId);
+                $genreQuery->where('genres.slug', $slug);
 
             });
         }
