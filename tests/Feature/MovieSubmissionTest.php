@@ -32,6 +32,27 @@ class MovieSubmissionTest extends TestCase
         ]);
     }
 
+    public function test_user_submission_sanitizes_rich_text_content(): void
+    {
+        $user = User::factory()->create();
+        $genre = Genre::create(['name' => 'Drama', 'slug' => 'drama']);
+
+        $this->actingAs($user)->post(route('submissions.store'), [
+            'title' => 'Safe Rich Text Film',
+            'genres' => [$genre->id],
+            'synopsis' => '<h2>Synopsis</h2><script>alert(1)</script><p><strong>Bold text</strong></p>',
+            'review' => '<p><a href="javascript:alert(1)">Unsafe link</a></p>',
+        ])->assertRedirect(route('submissions.index'));
+
+        $movie = Movie::where('slug', 'safe-rich-text-film')->firstOrFail();
+
+        $this->assertStringContainsString('<h2>Synopsis</h2>', $movie->synopsis);
+        $this->assertStringContainsString('<strong>Bold text</strong>', $movie->synopsis);
+        $this->assertStringNotContainsString('<script>', $movie->synopsis);
+        $this->assertStringNotContainsString('alert(1)', $movie->synopsis);
+        $this->assertStringNotContainsString('javascript:', $movie->review);
+    }
+
     public function test_user_can_only_resubmit_their_rejected_submission(): void
     {
         $user = User::factory()->create();
@@ -93,6 +114,26 @@ class MovieSubmissionTest extends TestCase
             'user_id' => $user->id,
             'status' => Movie::STATUS_APPROVED,
         ]);
+    }
+
+    public function test_admin_movie_content_is_sanitized_before_storage(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $genre = Genre::create(['name' => 'Drama', 'slug' => 'drama']);
+
+        $this->actingAs($admin)->post(route('admin.movies.store'), [
+            'title' => 'Admin Rich Text Film',
+            'genres' => [$genre->id],
+            'synopsis' => '<p><em>Italic synopsis</em></p><iframe src="bad"></iframe>',
+            'review' => '<ul><li>Good point</li></ul><img src="bad">',
+        ])->assertRedirect(route('admin.movies.index'));
+
+        $movie = Movie::where('slug', 'admin-rich-text-film')->firstOrFail();
+
+        $this->assertStringContainsString('<em>Italic synopsis</em>', $movie->synopsis);
+        $this->assertStringNotContainsString('<iframe', $movie->synopsis);
+        $this->assertStringContainsString('<ul><li>Good point</li></ul>', $movie->review);
+        $this->assertStringNotContainsString('<img', $movie->review);
     }
 
     public function test_user_can_delete_their_own_approved_movie_from_submissions(): void

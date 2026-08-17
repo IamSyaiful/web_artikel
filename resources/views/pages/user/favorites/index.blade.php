@@ -41,7 +41,7 @@
                         id="favorite-sort"
                         name="sort"
                         onchange="this.form.submit()"
-                        class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-950"
+                        class="rounded-lg border border-gray-300 bg-white py-3 pl-4 pr-10 text-sm font-medium text-gray-700 outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-950"
                     >
                         <option value="newest" @selected($sort === 'newest')>Newest First</option>
                         <option value="oldest" @selected($sort === 'oldest')>Oldest First</option>

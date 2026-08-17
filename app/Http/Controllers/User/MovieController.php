@@ -3,17 +3,31 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Movie;
 use App\Models\Genre;
 use App\Models\Page;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
     public function index(Request $request)
     {
+        $yearRules = ['nullable', 'integer', 'between:1900,' . now()->year];
+        $yearFromRules = $yearRules;
+
+        if ($request->filled('year_to')) {
+            $yearFromRules[] = 'lte:year_to';
+        }
+
+        $validated = $request->validate([
+            'year_from' => $yearFromRules,
+            'year_to' => $yearRules,
+        ], [
+            'year_from.lte' => 'The starting year must not be later than the ending year.',
+        ]);
+
         $query = Movie::approved()->with('genres');
 
         // Fungsi Search
@@ -45,12 +59,12 @@ class MovieController extends Controller
 
         // Filter Year
 
-        if ($request->filled('year_from')) {
-            $query->whereYear('release_date', '>=', $request->year_from);
+        if (! empty($validated['year_from'])) {
+            $query->whereYear('release_date', '>=', $validated['year_from']);
         }
 
-        if ($request->filled('year_to')) {
-            $query->whereYear('release_date', '<=', $request->year_to);
+        if (! empty($validated['year_to'])) {
+            $query->whereYear('release_date', '<=', $validated['year_to']);
         }
 
         //Sorting

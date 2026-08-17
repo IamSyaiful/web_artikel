@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Genre;
 use App\Models\Movie;
+use App\Services\RichTextSanitizer;
 use App\Services\TmdbService;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
@@ -33,9 +34,11 @@ class MovieSubmissionController extends Controller
         ]);
     }
 
-    public function store(Request $request, TmdbService $tmdb): RedirectResponse
+    public function store(Request $request, TmdbService $tmdb, RichTextSanitizer $sanitizer): RedirectResponse
     {
         $validated = $this->validated($request);
+        $validated['synopsis'] = $sanitizer->clean($validated['synopsis'] ?? null);
+        $validated['review'] = $sanitizer->clean($validated['review'] ?? null);
         $poster = $this->storePoster($request, $tmdb);
 
         $movie = $request->user()->movies()->create([
@@ -61,10 +64,12 @@ class MovieSubmissionController extends Controller
         ]);
     }
 
-    public function update(Request $request, Movie $movie, TmdbService $tmdb): RedirectResponse
+    public function update(Request $request, Movie $movie, TmdbService $tmdb, RichTextSanitizer $sanitizer): RedirectResponse
     {
         $this->ensureRejectedOwner($request, $movie);
         $validated = $this->validated($request);
+        $validated['synopsis'] = $sanitizer->clean($validated['synopsis'] ?? null);
+        $validated['review'] = $sanitizer->clean($validated['review'] ?? null);
         $poster = $movie->poster;
 
         if ($request->hasFile('poster') || $request->filled('tmdb_poster_path')) {

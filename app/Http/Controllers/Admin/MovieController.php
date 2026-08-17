@@ -8,6 +8,7 @@ use App\Models\Movie;
 use App\Models\Genre;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Services\RichTextSanitizer;
 use App\Services\TmdbService;
 use Illuminate\Http\Client\RequestException;
 
@@ -65,7 +66,7 @@ class MovieController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, RichTextSanitizer $sanitizer)
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -79,6 +80,9 @@ class MovieController extends Controller
             'genres' => ['required', 'array', 'min:1'],
             'genres.*' => ['exists:genres,id'],
         ]);
+
+        $validated['synopsis'] = $sanitizer->clean($validated['synopsis'] ?? null);
+        $validated['review'] = $sanitizer->clean($validated['review'] ?? null);
 
         $slug = Str::slug($validated['title']);
 
@@ -147,7 +151,7 @@ class MovieController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Movie $movie)
+    public function update(Request $request, Movie $movie, RichTextSanitizer $sanitizer)
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -161,6 +165,9 @@ class MovieController extends Controller
             'genres' => ['required', 'array', 'min:1'],
             'genres.*' => ['exists:genres,id'],
         ]);
+
+        $validated['synopsis'] = $sanitizer->clean($validated['synopsis'] ?? null);
+        $validated['review'] = $sanitizer->clean($validated['review'] ?? null);
 
         $slug = Str::slug($validated['title']);
 

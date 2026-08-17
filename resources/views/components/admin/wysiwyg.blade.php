@@ -16,6 +16,7 @@
     <textarea
         id="{{ $name }}"
         name="{{ $name }}"
+        data-tinymce
         rows="8"
         placeholder="{{ $placeholder }}"
         class="block min-h-48 w-full resize-y rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-sm leading-6 text-gray-900 placeholder:text-gray-400 focus:border-gray-500 focus:ring-2 focus:ring-gray-200"

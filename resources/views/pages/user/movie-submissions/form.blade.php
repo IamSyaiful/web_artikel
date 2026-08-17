@@ -95,8 +95,16 @@
         @error('genres')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
     </div>
 
-    <div><label for="synopsis" class="mb-2 block text-sm font-medium text-gray-700">Synopsis</label><textarea id="synopsis" name="synopsis" rows="5" class="w-full rounded-lg border-gray-300">{{ old('synopsis', $movie->synopsis) }}</textarea></div>
-    <div><label for="review" class="mb-2 block text-sm font-medium text-gray-700">Review</label><textarea id="review" name="review" rows="8" class="w-full rounded-lg border-gray-300">{{ old('review', $movie->review) }}</textarea></div>
+    <div>
+        <label for="synopsis" class="mb-2 block text-sm font-medium text-gray-700">Synopsis</label>
+        <textarea id="synopsis" name="synopsis" data-tinymce rows="5" class="w-full rounded-lg border-gray-300">{{ old('synopsis', $movie->synopsis) }}</textarea>
+        @error('synopsis')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
+    <div>
+        <label for="review" class="mb-2 block text-sm font-medium text-gray-700">Review</label>
+        <textarea id="review" name="review" data-tinymce rows="8" class="w-full rounded-lg border-gray-300">{{ old('review', $movie->review) }}</textarea>
+        @error('review')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+    </div>
 
     <div class="flex justify-end gap-3 border-t border-gray-200 pt-5">
         <a href="{{ route('submissions.index') }}" class="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700">Cancel</a>
@@ -148,6 +156,18 @@
             posterPreviewName.textContent = '';
         };
 
+        const setEditorValue = (id, value) => {
+            const editor = window.tinymce?.get(id);
+
+            if (editor) {
+                editor.setContent(value || '');
+                return;
+            }
+
+            const field = document.getElementById(id);
+            if (field) field.value = value || '';
+        };
+
         const fillMovieForm = (movie) => {
             titleInput.value = movie.title || '';
             syncSlug();
@@ -159,8 +179,7 @@
                 rating: movie.rating,
                 synopsis: movie.synopsis,
             })) {
-                const field = document.getElementById(id);
-                if (field) field.value = value || '';
+                setEditorValue(id, value);
             }
 
             const importedGenreIds = new Set((movie.genre_ids || []).map((id) => String(id)));

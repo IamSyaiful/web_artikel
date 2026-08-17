@@ -45,30 +45,6 @@
 
         {{-- Right --}}
         <div class="flex items-center gap-7">
-
-            {{-- Search --}}
-            <button
-                type="button"
-                class="text-gray-700 transition hover:text-gray-950"
-                aria-label="Search"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.8"
-                    stroke="currentColor"
-                    class="h-5 w-5"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m21 21-4.35-4.35m1.35-5.4a6.75 6.75 0 1 1-13.5 0 6.75 6.75 0 0 1 13.5 0Z"
-                    />
-                </svg>
-            </button>
-
-
             @guest
 
                 <a
@@ -348,6 +324,14 @@
                             class="mt-1 flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
                         >
                             Favorite
+                        </a>
+
+                        <a
+                            href="{{ route('submissions.index') }}"
+                            @click="open = false"
+                            class="mt-1 flex items-center rounded-xl px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-950"
+                        >
+                            My Submission
                         </a>
 
                         <form method="POST" action="{{ route('logout') }}" class="mt-1">

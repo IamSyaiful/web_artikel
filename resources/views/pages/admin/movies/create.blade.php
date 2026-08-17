@@ -238,6 +238,17 @@
             if (field) field.value = value ?? '';
         };
 
+        const setEditorValue = (id, value) => {
+            const editor = window.tinymce?.get(id);
+
+            if (editor) {
+                editor.setContent(value ?? '');
+                return;
+            }
+
+            setValue(id, value);
+        };
+
         const syncSlug = () => {
             const title = document.getElementById('title');
             const slug = document.getElementById('slug');
@@ -259,7 +270,7 @@
             setValue('duration', movie.duration);
             setValue('director', movie.director);
             setValue('rating', movie.rating);
-            setValue('synopsis', movie.synopsis);
+            setEditorValue('synopsis', movie.synopsis);
             posterPathInput.value = movie.poster_path ?? '';
 
             const importedGenreIds = new Set((movie.genre_ids ?? []).map((id) => String(id)));

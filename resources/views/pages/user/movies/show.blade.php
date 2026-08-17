@@ -250,9 +250,9 @@
                                 Synopsis
                             </h2>
 
-                            <p class="mt-2 break-words text-sm leading-7 text-gray-600 sm:text-base">
-                                {{ $movie->synopsis }}
-                            </p>
+                            <div class="rich-content mt-2 break-words text-sm leading-7 text-gray-600 sm:text-base">
+                                {!! app(\App\Services\RichTextSanitizer::class)->clean($movie->synopsis) !!}
+                            </div>
 
                         </div>
 
@@ -401,9 +401,9 @@
                                 “
                             </span>
 
-                            <p class="min-w-0 break-words text-sm leading-7 text-gray-600 sm:text-base">
-                                {{ $movie->review }}
-                            </p>
+                            <div class="rich-content min-w-0 break-words text-sm leading-7 text-gray-600 sm:text-base">
+                                {!! app(\App\Services\RichTextSanitizer::class)->clean($movie->review) !!}
+                            </div>
 
                         </div>
 

@@ -246,23 +246,45 @@
 
                         <div class="grid grid-cols-2 gap-2">
 
-                            <input
-                                type="number"
+                            <select
                                 name="year_from"
-                                value="{{ request('year_from') }}"
-                                placeholder="From"
-                                class="w-full rounded-lg border border-gray-300 px-2.5 py-2 text-xs text-gray-700 outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-950"
+                                aria-label="Year from"
+                                @class([
+                                    'w-full rounded-lg border bg-white py-2 pl-2.5 pr-8 text-xs text-gray-700 outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-950',
+                                    'border-red-500' => $errors->has('year_from'),
+                                    'border-gray-300' => ! $errors->has('year_from'),
+                                ])
                             >
+                                <option value="">From</option>
+                                @foreach (range(now()->year, 1900) as $year)
+                                    <option value="{{ $year }}" @selected(old('year_from', request('year_from')) == $year)>{{ $year }}</option>
+                                @endforeach
+                            </select>
 
-                            <input
-                                type="number"
+                            <select
                                 name="year_to"
-                                value="{{ request('year_to') }}"
-                                placeholder="To"
-                                class="w-full rounded-lg border border-gray-300 px-2.5 py-2 text-xs text-gray-700 outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-950"
+                                aria-label="Year to"
+                                @class([
+                                    'w-full rounded-lg border bg-white py-2 pl-2.5 pr-8 text-xs text-gray-700 outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-950',
+                                    'border-red-500' => $errors->has('year_to'),
+                                    'border-gray-300' => ! $errors->has('year_to'),
+                                ])
                             >
+                                <option value="">To</option>
+                                @foreach (range(now()->year, 1900) as $year)
+                                    <option value="{{ $year }}" @selected(old('year_to', request('year_to')) == $year)>{{ $year }}</option>
+                                @endforeach
+                            </select>
 
                         </div>
+
+                        @error('year_from')
+                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        @error('year_to')
+                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
 
                     </div>
 

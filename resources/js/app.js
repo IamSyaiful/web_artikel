@@ -1,11 +1,24 @@
 import Alpine from 'alpinejs';
 import './alert';
+import tinymce from 'tinymce';
+import 'tinymce/icons/default';
+import 'tinymce/models/dom';
+import 'tinymce/themes/silver';
+import 'tinymce/skins/ui/oxide/skin.js';
+import 'tinymce/skins/ui/oxide/content.js';
+import 'tinymce/skins/content/default/content.js';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/wordcount';
 
 import { createIcons, icons } from 'lucide';
 import { DataTable } from 'simple-datatables';
 
 window.Alpine = Alpine;
 window.createIcons = createIcons;
+window.tinymce = tinymce;
 
 Alpine.start();
 
@@ -139,6 +152,38 @@ const initPreline = async () => {
     }
 };
 
+const initRichTextEditors = () => {
+    const textareas = document.querySelectorAll('textarea[data-tinymce]');
+
+    if (!textareas.length || !window.tinymce) return;
+
+    window.tinymce.init({
+        selector: 'textarea[data-tinymce]',
+        license_key: 'gpl',
+        menubar: false,
+        branding: false,
+        promotion: false,
+        height: 360,
+        plugins: 'advlist autolink link lists wordcount',
+        toolbar: 'undo redo | blocks | bold italic underline | bullist numlist blockquote | link | removeformat',
+        block_formats: 'Paragraph=p; Heading 2=h2; Heading 3=h3; Heading 4=h4',
+        link_default_target: '_blank',
+        link_rel_list: [
+            { title: 'No rel', value: '' },
+            { title: 'No opener', value: 'noopener' },
+            { title: 'No opener and noreferrer', value: 'noopener noreferrer' },
+        ],
+        content_style: 'body { font-family: Figtree, Arial, sans-serif; font-size: 15px; line-height: 1.7; padding: 0.75rem; }',
+    });
+
+    document.querySelectorAll('form').forEach((form) => {
+        if (form.dataset.tinymceSubmitBound) return;
+
+        form.dataset.tinymceSubmitBound = 'true';
+        form.addEventListener('submit', () => window.tinymce.triggerSave());
+    });
+};
+
 const init = () => {
     initIcons();
     initDataTables();
@@ -146,6 +191,7 @@ const init = () => {
     initSlugPreviews();
     initHorizontalCarousels();
     initPreline();
+    initRichTextEditors();
 };
 
 if (document.readyState === 'loading') {
